@@ -1,0 +1,2 @@
+#define DISABLED -1
+#define SELECT_MARGIN 10

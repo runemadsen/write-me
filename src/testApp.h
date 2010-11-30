@@ -1,11 +1,12 @@
 #ifndef _TEST_APP
 #define _TEST_APP
 
-
 #include "ofMain.h"
+#include "ModelPlotter.h"
+#include "PagesController.h"
 
-class testApp : public ofBaseApp{
-	
+class testApp : public ofBaseApp
+{	
 	public:
 		
 		void setup();
@@ -19,6 +20,9 @@ class testApp : public ofBaseApp{
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
+	
+	ModelPlotter plotter;
+	PagesController pages;
 };
 
 #endif
