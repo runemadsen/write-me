@@ -136,7 +136,7 @@ bool ModelPlotter::getRecordMode()
 
 void ModelPlotter::keyPressed(int key)
 {	
-	if (key == 'r') 
+	if(key == 'r') 
 	{
 		_recordMode = !_recordMode;
 		
@@ -144,6 +144,14 @@ void ModelPlotter::keyPressed(int key)
 		{
 			App::getInstance()->flagModelsChanged();
 		}
+	}
+	else if(key == 'L')
+	{
+		loadModels();
+	}
+	else if(key == 'S')
+	{
+		saveModels();
 	}
 	
 	if(_recordMode)
@@ -187,3 +195,87 @@ void ModelPlotter::keyPressed(int key)
 		}
 	}
 }
+
+/* Loading / Saving
+ ___________________________________________________________ */
+
+void ModelPlotter::loadModels()
+{
+	App * app = App::getInstance();
+	
+	if(_xml.loadFile(XML_FILE))
+	{
+		for(int i = 0; i< app->models.size(); i++)
+		{
+			delete app->models[i];
+		}
+		
+		app->models.clear();
+		
+		if(_xml.pushTag(PAGES, 0))
+		{
+			for(int i = 0; i < _xml.getNumTags(PAGE); i++) 
+			{
+				_xml.pushTag(PAGE, i);
+				
+				Page * page = new Page();
+				page->id = _idCounter;
+				
+				for(int j = 0; j < _xml.getNumTags(POINT); j++) 
+				{
+					float x = (float) _xml.getAttribute(POINT, X, 0, j);
+					float y = (float) _xml.getAttribute(POINT, Y, 0, j);
+					
+					cout << "X: " << x << endl;
+					cout << "Y: " << y << endl;
+					
+					page->pts.push_back(ofxVec2f(x, y));
+				}
+				
+				_xml.popTag();
+				
+				app->models.push_back(page);
+				
+				_idCounter++;
+			}
+			
+			_xml.popTag();
+		}
+	}
+	
+	app->flagModelsChanged();
+	
+	cout << ":::::::::::: Models were loaded ::::::::::::" << endl;
+}
+
+void ModelPlotter::saveModels()
+{	
+	App * app = App::getInstance();
+	
+	_xml.clear();
+	
+	_xml.addTag(PAGES);
+	_xml.pushTag(PAGES, 0);
+	
+	for(int i = 0; i < app->models.size(); i++)
+	{
+		_xml.addTag(PAGE);
+		_xml.pushTag(PAGE, i);
+		
+		for (int j = 0; j < app->models[i]->pts.size(); j++) 
+		{
+			_xml.addTag(POINT);
+			_xml.addAttribute(POINT, "x", ofToString(app->models[i]->pts[j].x, 1), j);
+			_xml.addAttribute(POINT, "y", ofToString(app->models[i]->pts[j].y, 1), j);
+		}
+		
+		_xml.popTag();
+	}
+	
+	_xml.popTag();
+		
+	_xml.saveFile(XML_FILE);
+	
+	cout << ":::::::::::: Models were saved ::::::::::::" << endl;
+}
+

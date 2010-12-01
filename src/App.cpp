@@ -28,8 +28,6 @@ bool App::modelsChanged()
 {
 	_modelsChanged = !_modelsChanged;
 	
-	cout << "returning: " << !_modelsChanged << endl;
-	
 	return !_modelsChanged;
 }
 

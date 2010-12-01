@@ -4,6 +4,7 @@
 #include "Page.h"
 #include "App.h"
 #include "Constants.h"
+#include "ofxXmlSettings.h"
 
 class ModelPlotter  
 {
@@ -28,10 +29,15 @@ private:
 	bool isClickWithinModel(float xPos, float yPos);
 	void deleteSelectedModel();
 	
+	void loadModels();
+	void saveModels();
+	
 	int _selectedModel;
 	int _selectedPoint;
 	
 	bool _recordMode;
 	
 	int _idCounter;
+	
+	ofxXmlSettings _xml;
 };
