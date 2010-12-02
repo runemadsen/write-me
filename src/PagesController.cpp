@@ -6,7 +6,9 @@
 PagesController::PagesController()
 {
 	testVid.loadMovie("test.mov");
-	testVid.play();
+	//testVid.play();
+	
+	_img.loadImage("test1.png");
 }
 
 /* Update
@@ -14,7 +16,7 @@ PagesController::PagesController()
 
 void PagesController::update()
 {	
-	testVid.update();
+	//testVid.update();
 	
 	if(App::getInstance()->modelsChanged()) 
 	{
@@ -32,14 +34,14 @@ void PagesController::update()
 
 void PagesController::draw()
 {
-	testVid.getTextureReference().bind();
+	//testVid.getTextureReference().bind();
 	
 	for(int i = 0; i < _views.size(); i++)
 	{
 		_views[i]->draw();
 	}
 	
-	testVid.getTextureReference().unbind();
+	//testVid.getTextureReference().unbind();
 }
 
 /* Reset
@@ -64,7 +66,7 @@ void PagesController::assignModelsToViews()
 		
 		if(!found)
 		{
-			PageView * view = new PageView();
+			PageView * view = new PageView(&_img);
 			view->modelid = model->id;
 			_views.push_back(view);
 		}

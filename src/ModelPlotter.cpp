@@ -193,6 +193,49 @@ void ModelPlotter::keyPressed(int key)
 				App::getInstance()->models[_selectedModel]->pts[_selectedPoint].y += 1;
 			}
 		}
+		// d
+		else if (key == 'd') 
+		{
+			if(_selectedModel != DISABLED)
+			{
+				moveModel(true, +1);
+			}
+		}
+		// a
+		else if (key == 'a') 
+		{
+			if(_selectedModel != DISABLED)
+			{
+				moveModel(true, -1);
+			}
+		}
+		// w
+		else if (key == 'w') 
+		{
+			if(_selectedModel != DISABLED)
+			{
+				moveModel(false, -1);
+			}
+		}
+		// s
+		else if (key == 's') 
+		{
+			if(_selectedModel != DISABLED)
+			{
+				moveModel(false, +1);
+			}
+		}
+	}
+}
+
+void ModelPlotter::moveModel(bool moveX, float moveNum)
+{
+	for(int i = 0; i < App::getInstance()->models[_selectedModel]->pts.size(); i++)
+	{
+		if(moveX)
+			App::getInstance()->models[_selectedModel]->pts[i].x += moveNum;
+		else 
+			App::getInstance()->models[_selectedModel]->pts[i].y += moveNum;
 	}
 }
 

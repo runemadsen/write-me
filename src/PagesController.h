@@ -22,5 +22,7 @@ private:
 	
 	vector <PageView *> _views;
 	
+	ofImage _img;
+	
 	ofVideoPlayer testVid;
 };

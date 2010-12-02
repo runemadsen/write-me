@@ -32,6 +32,8 @@ private:
 	void loadModels();
 	void saveModels();
 	
+	void moveModel(bool moveX, float moveNum);
+	
 	int _selectedModel;
 	int _selectedPoint;
 	

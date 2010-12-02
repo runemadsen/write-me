@@ -10,12 +10,14 @@ class PageView : public View
 
 public:
 	
-	PageView();
+	PageView(ofImage * img);
 	
 	void update();
 	void draw();
+	void drawTest();
 	
 private:
 	
+	ofImage * _img;
 	float _texCoords[8];
 };
