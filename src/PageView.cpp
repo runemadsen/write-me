@@ -12,7 +12,7 @@ PageView::PageView(ofImage * img)
 	_texCoords[3] = 0;
 	
 	_texCoords[4] = _img->getWidth();
-	_texCoords[5] = _img->getHeight();
+	_texCoords[5] = _img->getHeight(); 
 	
 	_texCoords[6] = 0;
 	_texCoords[7] = _img->getHeight();
@@ -34,7 +34,7 @@ void PageView::draw()
 	
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, &_texCoords[0]);
-	ofQuad3D(model->pts[0].x, model->pts[0].y, 0, model->pts[1].x, model->pts[1].y, 0, model->pts[2].x, model->pts[2].y, 0, model->pts[3].x, model->pts[3].y, 0);
+	ofQuad2D(model->pts[0].x, model->pts[0].y, model->pts[1].x, model->pts[1].y, model->pts[2].x, model->pts[2].y, model->pts[3].x, model->pts[3].y);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	_img->getTextureReference().unbind();
