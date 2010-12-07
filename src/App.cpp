@@ -26,9 +26,14 @@ App::App()
 
 bool App::modelsChanged()
 {
-	_modelsChanged = !_modelsChanged;
+	if(_modelsChanged)
+	{
+		_modelsChanged = false;
+		
+		return true;
+	}
 	
-	return !_modelsChanged;
+	return false;
 }
 
 Page * App::getModel(int id)

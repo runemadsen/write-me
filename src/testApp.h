@@ -4,10 +4,6 @@
 #include "ofMain.h"
 #include "ModelPlotter.h"
 #include "PagesController.h"
-#include "json/json.h"
-#include <fstream>
-#include "Assignment.h"
-#include "Answer.h"
 
 class testApp : public ofBaseApp
 {	
@@ -25,14 +21,8 @@ class testApp : public ofBaseApp
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
 	
-		void loadJSON();
-		void parseJSON(string s);
-	
 		ModelPlotter plotter;
 		PagesController pages;
-	
-		Json::Value root;
-		Json::Reader reader;
 };
 
 #endif

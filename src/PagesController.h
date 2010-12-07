@@ -4,7 +4,8 @@
 #include "ofxVec2f.h"
 #include "Constants.h"
 #include "App.h"
-#include "PageView.h"
+#include "PageAnimation.h"
+#include "ofxDirList.h"
 
 class PagesController
 {
@@ -15,14 +16,12 @@ public:
 	
 	void update();
 	void draw();
+	
+	void changePages();
 
 	void assignModelsToViews();
 	
 private:
 	
-	vector <PageView *> _views;
-	
-	ofImage _img;
-	
-	ofVideoPlayer testVid;
+	vector <PageAnimation *> _views;
 };

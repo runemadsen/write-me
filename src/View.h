@@ -11,9 +11,11 @@ public:
 	View()
 	{
 		modelid = DISABLED;
+		finished = false;
 	}
 	
 	int modelid;
+	bool finished;
 	
 protected:
 	

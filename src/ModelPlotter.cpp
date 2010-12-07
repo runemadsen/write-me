@@ -151,6 +151,7 @@ void ModelPlotter::keyPressed(int key)
 		
 		if (!_recordMode) 
 		{
+			cout << "Flagging changed";
 			App::getInstance()->flagModelsChanged();
 		}
 	}

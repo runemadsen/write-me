@@ -4,9 +4,6 @@ PageView::PageView(ofImage * img)
 {
 	_img = img;
 	
-	w = 200;
-	h = 400;
-	
 	// update texcoords
 	_texCoords[0] = 0;
 	_texCoords[1] = 0;

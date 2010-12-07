@@ -4,11 +4,8 @@
  ___________________________________________________________ */
 
 PagesController::PagesController()
-{
-	testVid.loadMovie("test.mov");
-	//testVid.play();
-	
-	_img.loadImage("test2.png");
+{	
+
 }
 
 /* Update
@@ -16,16 +13,26 @@ PagesController::PagesController()
 
 void PagesController::update()
 {	
-	//testVid.update();
-	
 	if(App::getInstance()->modelsChanged()) 
 	{
 		assignModelsToViews();
 	}
 	
+	bool all_finished = true;
+	
 	for(int i = 0; i < _views.size(); i++)
 	{
 		_views[i]->update();
+		
+		if(!_views[i]->finished)
+		{
+			all_finished = false;
+		}
+	}
+	
+	if(all_finished)
+	{
+		changePages();
 	}
 }	
 
@@ -34,21 +41,56 @@ void PagesController::update()
 
 void PagesController::draw()
 {
-	//testVid.getTextureReference().bind();
-	
 	for(int i = 0; i < _views.size(); i++)
 	{
 		_views[i]->draw();
 	}
+}
+
+/* Change pages
+ ___________________________________________________________ */
+
+void PagesController::changePages()
+{
+	// Load XML files
+	ofxDirList DIR;
+	DIR.allowExt("png");
 	
-	//testVid.getTextureReference().unbind();
+	int numFiles = DIR.listDir(IMAGE_FOLDER);
+	
+	vector <string> fileNames;
+	
+	for(int i = 0; i < numFiles; i++)
+	{
+		fileNames.push_back(DIR.getName(i));
+	}
+	
+	std::random_shuffle(fileNames.begin(), fileNames.end());
+	
+	int fileCounter = 0;
+	
+	for (int i = 0; i < _views.size(); i++) 
+	{
+		cout << fileNames[fileCounter] << endl;
+		
+		_views[i]->setAndPlay(IMAGE_FOLDER + fileNames[fileCounter], 100, 0);
+		
+		fileCounter++;
+		
+		if(fileCounter == fileNames.size())
+		{
+			fileCounter = 0;
+			
+			std::random_shuffle(fileNames.begin(), fileNames.end());
+		}
+	}
 }
 
 /* Reset
  ___________________________________________________________ */
 
 void PagesController::assignModelsToViews()
-{
+{	
 	// loop through models to check views
 	for (int i = 0; i < App::getInstance()->models.size(); i++) 
 	{
@@ -66,7 +108,7 @@ void PagesController::assignModelsToViews()
 		
 		if(!found)
 		{
-			PageView * view = new PageView(&_img);
+			PageAnimation * view = new PageAnimation();
 			view->modelid = model->id;
 			_views.push_back(view);
 		}
@@ -91,4 +133,6 @@ void PagesController::assignModelsToViews()
 			_views.erase(_views.begin() + i);
 		}
 	}
+	
+	changePages();
 }
