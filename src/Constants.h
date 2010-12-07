@@ -1,3 +1,4 @@
+
 // GENERAL SETUP
 #define DISABLED -1
 #define SELECT_MARGIN 10
@@ -12,3 +13,6 @@
 #define POINT "point"
 #define X "x"
 #define Y "y"
+
+#define ANIMATION_MODE 0
+#define DRAWING_MODE 1

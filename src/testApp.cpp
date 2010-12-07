@@ -18,7 +18,23 @@ void testApp::setup()
 void testApp::update()
 {
 	plotter.update();
-	pages.update();
+	
+	if(mode == ANIMATION_MODE)
+	{
+		pages.update();
+	}
+	else 
+	{
+		drawing.update();
+		
+		if(drawing.finished)
+		{
+			cout << "Switching to animation mode \n";
+			mode = ANIMATION_MODE;
+		}
+	}
+		
+	
 }
 
 /* Draw
@@ -30,7 +46,14 @@ void testApp::draw()
 	
 	if(!plotter.getRecordMode())
 	{
-		pages.draw();
+		if(mode == DRAWING_MODE)
+		{
+			drawing.draw();
+		}
+		else 
+		{
+			pages.draw();
+		}
 	}
 }
 
@@ -58,6 +81,26 @@ void testApp::mousePressed(int x, int y, int button)
 }
 
 void testApp::keyReleased  (int key) {}
-void testApp::mouseMoved(int x, int y ) {}
+
+void testApp::mouseMoved(int x, int y ) 
+{
+	if(!plotter.getRecordMode())
+	{
+		cout << "Mouse Moved \n";
+		
+		if(mode == DRAWING_MODE)
+		{
+			cout << "Is in drawing mode \n";
+			drawing.mouseMoved(x, y);
+		}
+		else 
+		{
+			cout << "Switching to drawing mode \n";
+			mode = DRAWING_MODE;
+			drawing.show();
+		}
+	}
+}
+
 void testApp::mouseReleased(int x, int y, int button) {}
 void testApp::windowResized(int w, int h) {}

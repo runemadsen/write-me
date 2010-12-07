@@ -4,6 +4,7 @@
 #include "ofMain.h"
 #include "ModelPlotter.h"
 #include "PagesController.h"
+#include "DrawingController.h"
 
 class testApp : public ofBaseApp
 {	
@@ -23,6 +24,9 @@ class testApp : public ofBaseApp
 	
 		ModelPlotter plotter;
 		PagesController pages;
+		DrawingController drawing;
+	
+		int mode;
 };
 
 #endif
