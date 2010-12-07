@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Page.h"
+#include "Constants.h"
 
 class App  
 {
@@ -10,14 +11,24 @@ public:
 	
 	static App * getInstance();
 	
-	vector <Page *> models;
+	void addModel(Page * model);
+	
+	ofRectangle getModelBounds() { return _modelBounds; }
 	
 	bool modelsChanged();
-	void flagModelsChanged() { _modelsChanged = true; }
 	
-	Page * getModel(int id);
+	void flagModelsChanged();
+	
+	Page * getModelByID(int id);
+	Page * getModelByIndex(int index);
+	int getModelsSize() { return _models.size(); }
+	
+	void removeModel(int index);
 	
 private:
+	
+	vector <Page *> _models;
+	ofRectangle _modelBounds;
 	
 	// singleton stuff
 	App();  

@@ -5,6 +5,7 @@
 #include "ModelPlotter.h"
 #include "PagesController.h"
 #include "DrawingController.h"
+#include "Animation.h"
 
 class testApp : public ofBaseApp
 {	
@@ -22,11 +23,13 @@ class testApp : public ofBaseApp
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
 	
-		ModelPlotter plotter;
-		PagesController pages;
-		DrawingController drawing;
+		void changeAnimation(int i);
 	
-		int mode;
+		ModelPlotter plotter;
+		
+		vector <Animation *> animations;
+	
+		int curAnimation;
 };
 
 #endif

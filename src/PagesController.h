@@ -6,8 +6,11 @@
 #include "App.h"
 #include "PageAnimation.h"
 #include "ofxDirList.h"
+#include "Animation.h"
+#include "PageAnimationImage.h"
+#include "PageAnimationBlank.h"
 
-class PagesController
+class PagesController : public Animation
 {
 	
 public:
@@ -24,4 +27,6 @@ public:
 private:
 	
 	vector <PageAnimation *> _views;
+	
+	int _blank_page;
 };

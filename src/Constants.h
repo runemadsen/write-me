@@ -14,5 +14,4 @@
 #define X "x"
 #define Y "y"
 
-#define ANIMATION_MODE 0
-#define DRAWING_MODE 1
+#define DRAWING_TEXTURE_SIZE 200

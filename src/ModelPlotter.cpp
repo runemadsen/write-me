@@ -36,17 +36,17 @@ void ModelPlotter::draw()
 		ofRect(0, 0, frame_size, ofGetHeight());
 		ofRect(ofGetWidth() - frame_size, 0, frame_size, ofGetHeight());
 		
-		for(int i = 0; i < App::getInstance()->models.size(); i++)
+		for(int i = 0; i < App::getInstance()->getModelsSize(); i++)
 		{
 			ofSetColor(0, 255, 0);
 			
 			if(i == _selectedModel)	
 			{
-				drawModel(App::getInstance()->models[i], 0x000FF00);
+				drawModel(App::getInstance()->getModelByIndex(i), 0x000FF00);
 			}
 			else
 			{
-				drawModel(App::getInstance()->models[i], 0xFF0000);
+				drawModel(App::getInstance()->getModelByIndex(i), 0xFF0000);
 			}
 		}	
 	}
@@ -77,10 +77,11 @@ void ModelPlotter::mousePressed(int xPos, int yPos, int button)
 		{
 			if (_selectedModel == DISABLED) 
 			{
+				App * app = App::getInstance();
 				Page * model = new Page();
 				model->addDefaultPoints(xPos, yPos);
 				model->id = _idCounter;
-				App::getInstance()->models.push_back(model);
+				app->addModel(model);
 				
 				_idCounter++;
 			}
@@ -96,8 +97,8 @@ void ModelPlotter::mouseDragged(int xPos, int yPos, int button)
 {
 	if(_recordMode && _selectedModel != DISABLED && _selectedPoint != DISABLED)
 	{
-		App::getInstance()->models[_selectedModel]->pts[_selectedPoint].x = xPos;
-		App::getInstance()->models[_selectedModel]->pts[_selectedPoint].y = yPos;
+		App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].x = xPos;
+		App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].y = yPos;
 	}
 }
 
@@ -106,9 +107,9 @@ ___________________________________________________________ */
 
 bool ModelPlotter::isClickWithinModel(float xPos, float yPos)
 {	
-	for(int i = 0; i < App::getInstance()->models.size(); i++)
+	for(int i = 0; i < App::getInstance()->getModelsSize(); i++)
 	{
-		Page * model = App::getInstance()->models[i];
+		Page * model = App::getInstance()->getModelByID(i);
 		
 		for (int j = 0; j < model->pts.size(); j++) 
 		{
@@ -129,8 +130,7 @@ void ModelPlotter::deleteSelectedModel()
 {
 	if(_selectedModel != DISABLED)
 	{
-		delete App::getInstance()->models[_selectedModel];
-		App::getInstance()->models.erase(App::getInstance()->models.begin() + _selectedModel);
+		App::getInstance()->removeModel(_selectedModel);
 		_selectedModel = DISABLED;
 	}
 }
@@ -151,7 +151,6 @@ void ModelPlotter::keyPressed(int key)
 		
 		if (!_recordMode) 
 		{
-			cout << "Flagging changed";
 			App::getInstance()->flagModelsChanged();
 		}
 	}
@@ -176,7 +175,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->models[_selectedModel]->pts[_selectedPoint].x += 1;
+				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].x += 1;
 			}
 		}
 		// left arrow
@@ -184,7 +183,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->models[_selectedModel]->pts[_selectedPoint].x -= 1;
+				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].x -= 1;
 			}
 		}
 		// up arrow
@@ -192,7 +191,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->models[_selectedModel]->pts[_selectedPoint].y -= 1;
+				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].y -= 1;
 			}
 		}
 		// down arrow
@@ -200,7 +199,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->models[_selectedModel]->pts[_selectedPoint].y += 1;
+				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].y += 1;
 			}
 		}
 		// d
@@ -240,12 +239,12 @@ void ModelPlotter::keyPressed(int key)
 
 void ModelPlotter::moveModel(bool moveX, float moveNum)
 {
-	for(int i = 0; i < App::getInstance()->models[_selectedModel]->pts.size(); i++)
+	for(int i = 0; i < App::getInstance()->getModelByIndex(_selectedModel)->pts.size(); i++)
 	{
 		if(moveX)
-			App::getInstance()->models[_selectedModel]->pts[i].x += moveNum;
+			App::getInstance()->getModelByIndex(_selectedModel)->pts[i].x += moveNum;
 		else 
-			App::getInstance()->models[_selectedModel]->pts[i].y += moveNum;
+			App::getInstance()->getModelByIndex(_selectedModel)->pts[i].y += moveNum;
 	}
 }
 
@@ -258,12 +257,12 @@ void ModelPlotter::loadModels()
 	
 	if(_xml.loadFile(XML_FILE))
 	{
-		for(int i = 0; i< app->models.size(); i++)
+		for(int i = 0; i< app->getModelsSize(); i++)
 		{
-			delete app->models[i];
+			app->removeModel(i);
 		}
 		
-		app->models.clear();
+		//app->models.clear();
 		
 		if(_xml.pushTag(PAGES, 0))
 		{
@@ -287,7 +286,7 @@ void ModelPlotter::loadModels()
 				
 				_xml.popTag();
 				
-				app->models.push_back(page);
+				app->addModel(page);
 				
 				_idCounter++;
 			}
@@ -310,16 +309,16 @@ void ModelPlotter::saveModels()
 	_xml.addTag(PAGES);
 	_xml.pushTag(PAGES, 0);
 	
-	for(int i = 0; i < app->models.size(); i++)
+	for(int i = 0; i < app->getModelsSize(); i++)
 	{
 		_xml.addTag(PAGE);
 		_xml.pushTag(PAGE, i);
 		
-		for (int j = 0; j < app->models[i]->pts.size(); j++) 
+		for (int j = 0; j < app->getModelByIndex(i)->pts.size(); j++) 
 		{
 			_xml.addTag(POINT);
-			_xml.addAttribute(POINT, "x", ofToString(app->models[i]->pts[j].x, 1), j);
-			_xml.addAttribute(POINT, "y", ofToString(app->models[i]->pts[j].y, 1), j);
+			_xml.addAttribute(POINT, "x", ofToString(app->getModelByIndex(i)->pts[j].x, 1), j);
+			_xml.addAttribute(POINT, "y", ofToString(app->getModelByIndex(i)->pts[j].y, 1), j);
 		}
 		
 		_xml.popTag();

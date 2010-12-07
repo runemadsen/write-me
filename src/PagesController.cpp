@@ -5,7 +5,7 @@
 
 PagesController::PagesController()
 {	
-
+	_blank_page = DISABLED;
 }
 
 /* Update
@@ -24,7 +24,7 @@ void PagesController::update()
 	{
 		_views[i]->update();
 		
-		if(!_views[i]->finished)
+		if(!_views[i]->getFinished())
 		{
 			all_finished = false;
 		}
@@ -71,9 +71,18 @@ void PagesController::changePages()
 	
 	for (int i = 0; i < _views.size(); i++) 
 	{
-		cout << fileNames[fileCounter] << endl;
-		
-		_views[i]->setAndPlay(IMAGE_FOLDER + fileNames[fileCounter], 100, 0);
+		if (i == _blank_page) 
+		{
+			PageAnimationBlank * view = (PageAnimationBlank *) _views[i];
+			
+			// do stuff
+		}
+		else 
+		{
+			PageAnimationImage * view = (PageAnimationImage *) _views[i];
+			
+			view->setAndPlay(IMAGE_FOLDER + fileNames[fileCounter], 100, 0);
+		}
 		
 		fileCounter++;
 		
@@ -86,15 +95,15 @@ void PagesController::changePages()
 	}
 }
 
-/* Reset
+/* Assign models to views
  ___________________________________________________________ */
 
 void PagesController::assignModelsToViews()
 {	
 	// loop through models to check views
-	for (int i = 0; i < App::getInstance()->models.size(); i++) 
+	for (int i = 0; i < App::getInstance()->getModelsSize(); i++) 
 	{
-		Page * model = App::getInstance()->models[i];
+		Page * model = App::getInstance()->getModelByIndex(i);
 		
 		bool found = false;
 		
@@ -108,7 +117,7 @@ void PagesController::assignModelsToViews()
 		
 		if(!found)
 		{
-			PageAnimation * view = new PageAnimation();
+			PageAnimation * view = new PageAnimationImage();
 			view->modelid = model->id;
 			_views.push_back(view);
 		}
@@ -119,9 +128,9 @@ void PagesController::assignModelsToViews()
 	{
 		bool keep = false;
 		
-		for (int j = 0; j < App::getInstance()->models.size(); j++) 
+		for (int j = 0; j < App::getInstance()->getModelsSize(); j++) 
 		{
-			if(_views[i]->modelid == App::getInstance()->models[j]->id)
+			if (App::getInstance()->getModelByID(_views[i]->modelid) != NULL) 
 			{
 				keep = true;
 			}

@@ -5,11 +5,16 @@
 
 void testApp::setup()
 {
+	curAnimation = 0;
+	
 	ofSetWindowTitle("Dear...");
 
 	ofSetFrameRate(60);
 	
 	ofBackground(0, 0, 0);
+	
+	animations.push_back( new PagesController() );
+	animations.push_back( new DrawingController() );
 }
 
 /* Update
@@ -19,22 +24,17 @@ void testApp::update()
 {
 	plotter.update();
 	
-	if(mode == ANIMATION_MODE)
+	if(!plotter.getRecordMode())
 	{
-		pages.update();
+		animations[curAnimation]->update();
 	}
-	else 
-	{
-		drawing.update();
-		
-		if(drawing.finished)
-		{
-			cout << "Switching to animation mode \n";
-			mode = ANIMATION_MODE;
-		}
-	}
-		
 	
+	if (animations[curAnimation]->getFinished()) 
+	{
+		int newAnimation = curAnimation == 0 ? 1 : 0;
+		
+		changeAnimation(newAnimation);
+	}
 }
 
 /* Draw
@@ -46,21 +46,26 @@ void testApp::draw()
 	
 	if(!plotter.getRecordMode())
 	{
-		if(mode == DRAWING_MODE)
-		{
-			drawing.draw();
-		}
-		else 
-		{
-			pages.draw();
-		}
+		animations[curAnimation]->draw();
 	}
+}
+
+/* Change Animation
+ _________________________________________________________________ */
+
+void testApp::changeAnimation(int i)
+{
+	animations[curAnimation]->hide();
+	
+	curAnimation = i;
+	
+	animations[curAnimation]->show();
 }
 
 /* Key Events
  _________________________________________________________________ */
 
-void testApp::keyPressed  (int key)
+void testApp::keyPressed(int key)
 {
 	plotter.keyPressed(key);
 	
@@ -73,6 +78,8 @@ void testApp::keyPressed  (int key)
 void testApp::mouseDragged(int x, int y, int button)
 {
 	plotter.mouseDragged(x, y, button);
+	
+	animations[curAnimation]->mouseDragged(x, y, button);
 }
 
 void testApp::mousePressed(int x, int y, int button)
@@ -86,19 +93,14 @@ void testApp::mouseMoved(int x, int y )
 {
 	if(!plotter.getRecordMode())
 	{
-		cout << "Mouse Moved \n";
-		
-		if(mode == DRAWING_MODE)
+		if(curAnimation == 0)
 		{
-			cout << "Is in drawing mode \n";
-			drawing.mouseMoved(x, y);
-		}
-		else 
-		{
+			changeAnimation(1);
 			cout << "Switching to drawing mode \n";
-			mode = DRAWING_MODE;
-			drawing.show();
+			animations[curAnimation]->show();
 		}
+		
+		animations[curAnimation]->mouseMoved(x, y);
 	}
 }
 

@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Animation.h"
-
-class PageAnimation : Animation
+class Animation
 {
-	
+
 public:
 	
-	PageAnimation() 
+	Animation() 
 	{
 		_finished = false;
 	}
@@ -24,8 +22,6 @@ public:
 	virtual void mouseReleased(int x, int y, int button) {}
 	
 	bool getFinished() { return _finished; }
-	
-	int modelid;
 	
 protected:
 	

@@ -19,6 +19,51 @@ App * App::getInstance()
 App::App()
 {
 	_modelsChanged = false;
+	
+	_modelBounds.x = ofGetWidth() / 2;
+	_modelBounds.y = ofGetHeight() / 2;
+	_modelBounds.width = DRAWING_TEXTURE_SIZE;
+	_modelBounds.height = DRAWING_TEXTURE_SIZE;
+}
+
+
+void App::flagModelsChanged() 
+{ 
+	// update boundingrect
+	int xLeft = ofGetWidth();
+	int xRight = 0;
+	int yTop = ofGetHeight();
+	int yBot = 0;	
+	
+	for (int j = 0; j < _models.size(); j++) 
+	{
+		for (int i = 0; i < _models[j]->pts.size(); i++) 
+		{
+			if(_models[j]->pts[i].x < xLeft)		xLeft = _models[j]->pts[i].x;
+			else if(_models[j]->pts[i].x > xRight)	xRight = _models[j]->pts[i].x;
+			
+			if(_models[j]->pts[i].y < yTop)			yTop = _models[j]->pts[i].y;
+			else if(_models[j]->pts[i].y > yBot)	yBot = _models[j]->pts[i].y;
+			
+		}
+	}
+	
+	cout << "xLeft: " << xLeft << endl;
+	cout << "xRight: " << xRight << endl;
+	cout << "yTop: " << yTop << endl;
+	cout << "yBot: " << yBot << endl;
+	
+	_modelBounds.x = xLeft;
+	_modelBounds.y = yTop;
+	_modelBounds.width = xRight - xLeft;
+	_modelBounds.height = yBot - yTop;
+	
+	cout << "Bonds X: " << _modelBounds.x << endl;
+	cout << "Bonds Y: " << _modelBounds.y << endl;
+	cout << "Bonds Width: " << _modelBounds.width << endl;
+	cout << "Bonds Height: " << _modelBounds.height << endl;
+	
+	_modelsChanged = true; 
 }
 
 /* Getter
@@ -36,15 +81,31 @@ bool App::modelsChanged()
 	return false;
 }
 
-Page * App::getModel(int id)
+Page * App::getModelByIndex(int index)
 {
-	for (int i = 0; i < models.size(); i++) 
+	return _models[index];
+}
+
+Page * App::getModelByID(int id)
+{
+	for (int i = 0; i < _models.size(); i++) 
 	{
-		if(id == models[i]->id)
+		if(id == _models[i]->id)
 		{
-			return models[i];
+			return _models[i];
 		}
 	}
 	
 	return NULL;
+}
+
+void App::addModel(Page * model)
+{
+	_models.push_back(model);
+}
+
+void App::removeModel(int index)
+{
+	delete _models[index];
+	_models.erase(_models.begin() + index);
 }

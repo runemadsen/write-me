@@ -3,8 +3,10 @@
 #include "ofMain.h"
 #include "Constants.h"
 #include "App.h"
+#include "Animation.h"
+#include "ofxFBOTexture.h"
 
-class DrawingController
+class DrawingController : public Animation
 {
 	
 public:
@@ -15,12 +17,14 @@ public:
 	void draw();
 	
 	void show();
-	
-	bool finished;
+	void hide();
 	
 	void mouseMoved(int x, int y);
+	void mouseDragged(int x, int y, int button);
 	
 private:
 	
 	long _lastDraw;
+	ofxFBOTexture _tex;
+	
 };
