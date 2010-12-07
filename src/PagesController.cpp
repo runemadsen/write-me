@@ -8,7 +8,7 @@ PagesController::PagesController()
 	testVid.loadMovie("test.mov");
 	//testVid.play();
 	
-	_img.loadImage("test1.png");
+	_img.loadImage("test2.png");
 }
 
 /* Update

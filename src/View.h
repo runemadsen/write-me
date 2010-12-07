@@ -13,8 +13,6 @@ public:
 		modelid = DISABLED;
 	}
 	
-	
-	
 	int modelid;
 	
 protected:

@@ -27,6 +27,15 @@ void ModelPlotter::draw()
 {	
 	if(_recordMode)
 	{
+		int frame_size = 10;
+		
+		ofSetColor(255, 0, 0);
+		ofFill();
+		ofRect(0, 0, ofGetWidth(), frame_size);
+		ofRect(0, ofGetHeight() - frame_size, ofGetWidth(), frame_size);
+		ofRect(0, 0, frame_size, ofGetHeight());
+		ofRect(ofGetWidth() - frame_size, 0, frame_size, ofGetHeight());
+		
 		for(int i = 0; i < App::getInstance()->models.size(); i++)
 		{
 			ofSetColor(0, 255, 0);

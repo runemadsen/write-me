@@ -34,6 +34,38 @@ void testApp::draw()
 	}
 }
 
+/* Key Events
+ _________________________________________________________________ */
+
+void testApp::keyPressed  (int key)
+{
+	plotter.keyPressed(key);
+	
+	if (key == 'f')
+	{
+		ofToggleFullscreen();
+	}
+	else if(key == 'l')
+	{
+		loadJSON();
+	}
+}
+
+void testApp::mouseDragged(int x, int y, int button)
+{
+	plotter.mouseDragged(x, y, button);
+}
+
+void testApp::mousePressed(int x, int y, int button)
+{
+	plotter.mousePressed(x, y, button);
+}
+
+void testApp::keyReleased  (int key) {}
+void testApp::mouseMoved(int x, int y ) {}
+void testApp::mouseReleased(int x, int y, int button) {}
+void testApp::windowResized(int w, int h) {}
+
 /* JSON
  _________________________________________________________________ */
 
@@ -101,34 +133,4 @@ void testApp::parseJSON(string s)
 	cout << ":::: Total answers: " << totalAnswers << endl;
 }
 
-/* Key Events
- _________________________________________________________________ */
 
-void testApp::keyPressed  (int key)
-{
-	plotter.keyPressed(key);
-	
-	if (key == 'f')
-	{
-		ofToggleFullscreen();
-	}
-	else if(key == 'l')
-	{
-		loadJSON();
-	}
-}
-
-void testApp::mouseDragged(int x, int y, int button)
-{
-	plotter.mouseDragged(x, y, button);
-}
-
-void testApp::mousePressed(int x, int y, int button)
-{
-	plotter.mousePressed(x, y, button);
-}
-
-void testApp::keyReleased  (int key) {}
-void testApp::mouseMoved(int x, int y ) {}
-void testApp::mouseReleased(int x, int y, int button) {}
-void testApp::windowResized(int w, int h) {}
