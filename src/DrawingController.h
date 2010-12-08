@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "ofxFBOTexture.h"
 #include "ofxVec2f.h"
+#include "ofxImage.h"
 
 class DrawingController : public Animation
 {

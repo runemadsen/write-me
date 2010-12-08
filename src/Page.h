@@ -10,28 +10,28 @@ public:
 	
 	void addDefaultPoints(int xPos, int yPos)
 	{
-		int margin = 10;
+		int margin = 40;
 		
 		ofxVec2f pt;
 		
 		// top left
-		pt.x = xPos - 10;
-		pt.y = yPos - 10;
+		pt.x = xPos - margin;
+		pt.y = yPos - margin;
 		pts.push_back(pt);
 		
 		// top right
-		pt.x = xPos + 10;
-		pt.y = yPos - 10;
+		pt.x = xPos + margin;
+		pt.y = yPos - margin;
 		pts.push_back(pt);
 		
 		// bottom right
-		pt.x = xPos + 10;
-		pt.y = yPos + 10;
+		pt.x = xPos + margin;
+		pt.y = yPos + margin;
 		pts.push_back(pt);
 		
 		// bottom left
-		pt.x = xPos - 10;
-		pt.y = yPos + 10;
+		pt.x = xPos - margin;
+		pt.y = yPos + margin;
 		pts.push_back(pt);
 	}
 	

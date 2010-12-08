@@ -52,11 +52,15 @@ void PagesController::draw()
 
 void PagesController::changePages()
 {
+	App::getInstance()->resetImageCount();
+	
 	// Load XML files
 	ofxDirList DIR;
 	DIR.allowExt("png");
 	
 	int numFiles = DIR.listDir(IMAGE_FOLDER);
+	
+	App::getInstance()->setImageCount(numFiles);
 	
 	vector <string> fileNames;
 	

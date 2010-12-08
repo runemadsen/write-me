@@ -73,9 +73,6 @@ void DrawingController::drawSinceLast()
 		ofxVec2f vec = _curPos - _lastPos;
 		vec.normalize();
 		
-		cout << "Length: " << len << endl;
-		cout << "Norm: " << vec.x << " , " << vec.y << endl;
-		
 		// draw as many length on normalize * length
 		for (int i = 1; i <= len; i++) 
 		{
@@ -83,9 +80,6 @@ void DrawingController::drawSinceLast()
 			float yPos = _lastPos.y + (vec.y * (float) i);
 			
 			drawPoint(xPos, yPos);
-			
-			if(i == 50)
-				cout << "Drawing at: " << xPos << " , " << yPos << endl;
 		}
 		
 		drawPoint(_curPos.x, _curPos.y);
@@ -104,7 +98,7 @@ void DrawingController::drawPoint(float x, float y)
 	
 	ofPushMatrix();
 	ofTranslate(x, _tex.getHeight() - y);
-	//ofRotateZ(ranRot);
+	ofRotateZ(ranRot);
 	
 	ofEnableAlphaBlending();
 	
@@ -156,6 +150,14 @@ void DrawingController::keyPressed(int key)
 {
 	if(key == 'c')
 	{
+		ofxImage screenGrab;
+		screenGrab.setFromPixels((unsigned char *)_tex.getPixels(), _tex.getWidth(), _tex.getHeight(), OF_IMAGE_COLOR);
+		screenGrab.mirror(false, true);
+		
+		int num = App::getInstance()->nextImage();
+		
+		screenGrab.saveImage("images/userimage" + ofToString(num, 0) + ".png");
+		
 		_finished = true;
 	}
 }

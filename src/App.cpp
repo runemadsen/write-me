@@ -25,6 +25,8 @@ App::App()
 	_modelBounds.y = (ofGetHeight() / 2) - (DRAWING_TEXTURE_SIZE / 2);
 	_modelBounds.width = DRAWING_TEXTURE_SIZE;
 	_modelBounds.height = DRAWING_TEXTURE_SIZE;
+	
+	_imageCount = 0;
 }
 
 

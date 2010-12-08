@@ -17,11 +17,15 @@ public:
 	
 	bool modelsChanged();
 	
+	int nextImage() { _imageCount++; return _imageCount; }
+	void setImageCount(int i) { _imageCount = i; }
+	void resetImageCount() { _imageCount = 0; }
+	
 	void flagModelsChanged();
 	
 	Page * getModelByID(int id);
 	Page * getModelByIndex(int index);
-	int getModelsSize() { cout << "Size: " << _models.size() << endl; return _models.size(); }
+	int getModelsSize() { return _models.size(); }
 	
 	void removeModel(int index);
 	
@@ -29,6 +33,8 @@ private:
 	
 	vector <Page *> _models;
 	ofRectangle _modelBounds;
+	
+	int _imageCount;
 	
 	// singleton stuff
 	App();  
