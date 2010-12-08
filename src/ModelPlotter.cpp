@@ -106,10 +106,15 @@ void ModelPlotter::mouseDragged(int xPos, int yPos, int button)
 ___________________________________________________________ */
 
 bool ModelPlotter::isClickWithinModel(float xPos, float yPos)
-{	
+{		
 	for(int i = 0; i < App::getInstance()->getModelsSize(); i++)
 	{
-		Page * model = App::getInstance()->getModelByID(i);
+		Page * model = App::getInstance()->getModelByIndex(i);
+		
+		if(model == NULL)
+		{
+			cout << "Model was null in isClickWithinModel: " << i << endl;
+		}
 		
 		for (int j = 0; j < model->pts.size(); j++) 
 		{
@@ -131,7 +136,9 @@ void ModelPlotter::deleteSelectedModel()
 	if(_selectedModel != DISABLED)
 	{
 		App::getInstance()->removeModel(_selectedModel);
+		
 		_selectedModel = DISABLED;
+		_selectedPoint = DISABLED;
 	}
 }
 

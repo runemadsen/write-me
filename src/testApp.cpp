@@ -7,6 +7,8 @@ void testApp::setup()
 {
 	curAnimation = 0;
 	
+	ofEnableSmoothing();
+	
 	ofSetWindowTitle("Dear...");
 
 	ofSetFrameRate(60);
@@ -69,6 +71,8 @@ void testApp::keyPressed(int key)
 {
 	plotter.keyPressed(key);
 	
+	animations[curAnimation]->keyPressed(key);
+	
 	if (key == 'f')
 	{
 		ofToggleFullscreen();
@@ -85,6 +89,8 @@ void testApp::mouseDragged(int x, int y, int button)
 void testApp::mousePressed(int x, int y, int button)
 {
 	plotter.mousePressed(x, y, button);
+	
+	animations[curAnimation]->mousePressed(x, y, button);
 }
 
 void testApp::keyReleased  (int key) {}
@@ -104,5 +110,9 @@ void testApp::mouseMoved(int x, int y )
 	}
 }
 
-void testApp::mouseReleased(int x, int y, int button) {}
+void testApp::mouseReleased(int x, int y, int button) 
+{
+	animations[curAnimation]->mouseReleased(x, y, button);
+}
+
 void testApp::windowResized(int w, int h) {}

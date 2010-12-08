@@ -14,4 +14,4 @@
 #define X "x"
 #define Y "y"
 
-#define DRAWING_TEXTURE_SIZE 200
+#define DRAWING_TEXTURE_SIZE 400

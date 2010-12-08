@@ -21,7 +21,7 @@ public:
 	
 	Page * getModelByID(int id);
 	Page * getModelByIndex(int index);
-	int getModelsSize() { return _models.size(); }
+	int getModelsSize() { cout << "Size: " << _models.size() << endl; return _models.size(); }
 	
 	void removeModel(int index);
 	

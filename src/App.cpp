@@ -20,8 +20,9 @@ App::App()
 {
 	_modelsChanged = false;
 	
-	_modelBounds.x = ofGetWidth() / 2;
-	_modelBounds.y = ofGetHeight() / 2;
+	//_modelBounds.x = 600;
+	_modelBounds.x = (ofGetWidth() / 2) - (DRAWING_TEXTURE_SIZE / 2);
+	_modelBounds.y = (ofGetHeight() / 2) - (DRAWING_TEXTURE_SIZE / 2);
 	_modelBounds.width = DRAWING_TEXTURE_SIZE;
 	_modelBounds.height = DRAWING_TEXTURE_SIZE;
 }
