@@ -40,7 +40,7 @@ void DrawingController::update()
 		allocateTextures();
 	}
 	
-	if(_d.isPlaying() && !_d.isFinished())
+	if(_d.isPlaying())
 	{
 		Dot * d = _d.getDot();
 		
@@ -65,6 +65,11 @@ void DrawingController::update()
 		{
 			_drawing = false;
 		}
+	}
+	
+	if(_d.isFinished())
+	{
+		_drawing = false;
 	}
 	
 	drawSinceLast();
@@ -180,12 +185,14 @@ void DrawingController::keyPressed(int key)
 {
 	if(key == 'c')
 	{
-		_tex.begin();
+		/*_tex.begin();
 		ofSetColor(240, 240, 240);
 		ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
 		_tex.end();
 		
-		_d.play();
+		_d.play();*/
+		
+		saveDrawing();
 		
 		/*ofxImage screenGrab;
 		screenGrab.setFromPixels((unsigned char *)_tex.getPixels(), _tex.getWidth(), _tex.getHeight(), OF_IMAGE_COLOR);
@@ -197,6 +204,56 @@ void DrawingController::keyPressed(int key)
 		
 		_finished = true;*/
 	}
+}
+
+void DrawingController::saveDrawing()
+{	
+	_xml.loadFromBuffer("<root></root>");
+	
+	_xml.clear();
+	
+	_xml.addTag(DRAWING);
+	_xml.pushTag(DRAWING, 0);
+	
+		_xml.addTag(POINTS);
+		_xml.pushTag(POINTS, 0);
+
+		for(int i = 0; i < _d.getSize(); i++)
+		{
+			_xml.addTag(POINT);
+			_xml.addAttribute(POINT, X, ofToString(_d.getDotAtIndex(i)->x, 1), i);
+			_xml.addAttribute(POINT, Y, ofToString(_d.getDotAtIndex(i)->y, 1), i);
+			_xml.addAttribute(POINT, MS, ofToString(_d.getDotAtIndex(i)->ms, 1), i);
+		}
+		
+		_xml.popTag();
+	
+		_xml.addTag(MOUSE_UPS);
+		_xml.pushTag(MOUSE_UPS, 0);
+	
+		for(int i = 0; i < _d.getMouseUpsSize(); i++)
+		{
+			_xml.addTag(MOUSE_UP);
+			_xml.addAttribute(MOUSE_UP, MS, ofToString(_d.getMouseUpAtIndex(i), 1), i);
+		}
+		
+		_xml.popTag();
+	
+	string file = ofToString(ofGetYear());
+	file += "-";
+	file += ofToString(ofGetMonth());
+	file += "-";
+	file += ofToString(ofGetDay());
+	file += "-";
+	file += ofToString(ofGetHours());
+	file += "-";
+	file += ofToString(ofGetMinutes());
+	file += "-";
+	file += ofToString(ofGetSeconds());
+	
+	_xml.saveFile(DRAWING_FOLDER + file + ".xml");
+	
+	// make sure to load this file into a drawing
 }
 
 /* Show / Hide

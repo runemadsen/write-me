@@ -15,24 +15,19 @@ void PagesController::update()
 {	
 	if(App::getInstance()->modelsChanged()) 
 	{
-		assignModelsToViews();
+		createNewViews();
 	}
-	
-	bool all_finished = true;
 	
 	for(int i = 0; i < _views.size(); i++)
 	{
 		_views[i]->update();
 		
-		if(!_views[i]->getFinished())
+		if(_views[i]->getFinished())
 		{
-			all_finished = false;
+			_views[i]->setDrawingModel(getRandomDrawingModel());
+			
+			// play
 		}
-	}
-	
-	if(all_finished)
-	{
-		changePages();
 	}
 }	
 
@@ -47,105 +42,81 @@ void PagesController::draw()
 	}
 }
 
-/* Change pages
- ___________________________________________________________ */
-
-void PagesController::changePages()
-{
-	App::getInstance()->resetImageCount();
-	
-	// Load XML files
-	ofxDirList DIR;
-	DIR.allowExt("png");
-	
-	int numFiles = DIR.listDir(IMAGE_FOLDER);
-	
-	App::getInstance()->setImageCount(numFiles);
-	
-	vector <string> fileNames;
-	
-	for(int i = 0; i < numFiles; i++)
-	{
-		fileNames.push_back(DIR.getName(i));
-	}
-	
-	std::random_shuffle(fileNames.begin(), fileNames.end());
-	
-	int fileCounter = 0;
-	
-	for (int i = 0; i < _views.size(); i++) 
-	{
-		if (i == _blank_page) 
-		{
-			PageAnimationBlank * view = (PageAnimationBlank *) _views[i];
-			
-			// do stuff
-		}
-		else 
-		{
-			PageAnimationImage * view = (PageAnimationImage *) _views[i];
-			
-			view->setAndPlay(IMAGE_FOLDER + fileNames[fileCounter], 100, 0);
-		}
-		
-		fileCounter++;
-		
-		if(fileCounter == fileNames.size())
-		{
-			fileCounter = 0;
-			
-			std::random_shuffle(fileNames.begin(), fileNames.end());
-		}
-	}
-}
-
 /* Assign models to views
  ___________________________________________________________ */
 
-void PagesController::assignModelsToViews()
+void PagesController::createNewViews()
 {	
-	// loop through models to check views
-	for (int i = 0; i < App::getInstance()->getModelsSize(); i++) 
-	{
-		Page * model = App::getInstance()->getModelByIndex(i);
-		
-		bool found = false;
-		
-		for (int j = 0; j < _views.size(); j++) 
-		{
-			if(model->id == _views[j]->modelid)
-			{
-				found = true;
-			}
-		}
-		
-		if(!found)
-		{
-			PageAnimation * view = new PageAnimationImage();
-			view->modelid = model->id;
-			_views.push_back(view);
-		}
-	}
+	App * app = App::getInstance();
 	
-	// loop through views to check models
+	// remove all views
 	for (int i = 0; i < _views.size(); i++) 
 	{
-		bool keep = false;
-		
-		for (int j = 0; j < App::getInstance()->getModelsSize(); j++) 
+		delete _views[i];
+	}
+	
+	_views.clear();
+	
+	// loop through modelsnand create views
+	for (int i = 0; i < app->getModelsSize(); i++) 
+	{		
+		PageAnimation * view = new PageAnimationDrawing();
+		view->setPageModel(app->getModelByIndex(i));
+		view->setDrawingModel(getRandomDrawingModel());
+		_views.push_back(view);
+	}
+}
+
+/* Load random drawing model
+ ___________________________________________________________ */
+
+Drawing PagesController::getRandomDrawingModel()
+{
+	ofxDirList DIR;
+	DIR.allowExt("png");
+	
+	int numFiles = DIR.listDir(DRAWING_FOLDER);
+	
+	vector <string> fileNames;
+	
+	int ranIndex = ofRandom(0, numFiles);
+	
+	Drawing drawing;
+	
+	if(_xml.loadFile(DRAWING_FOLDER + DIR.getName(ranIndex)))
+	{
+		if(_xml.pushTag(DRAWING, 0))
 		{
-			if (App::getInstance()->getModelByID(_views[i]->modelid) != NULL) 
+			// points
+			if(_xml.pushTag(POINTS, 0))
 			{
-				keep = true;
+				for (int i = 0; i < _xml.getNumTags(POINT); i++) 
+				{
+					Dot d;
+					d.x = (float) _xml.getAttribute(POINT, X, 0, i);
+					d.y = (float) _xml.getAttribute(POINT, Y, 0, i);
+					d.ms = (long) _xml.getAttribute(POINT, MS, 0, i);
+					
+					drawing.addDot(d);
+				}
+				
+				_xml.popTag();
 			}
-		}
-		
-		if(!keep)
-		{
-			delete _views[i];
-			_views.erase(_views.begin() + i);
+			
+			// mouse ups
+			if(_xml.pushTag(MOUSE_UPS, 0))
+			{
+				for (int i = 0; i < _xml.getNumTags(MOUSE_UP); i++) 
+				{
+					drawing.addMouseUp( (long) _xml.getAttribute(MOUSE_UP, MS, 0, i));
+				}
+				
+				_xml.popTag();
+			}
+			
+			_xml.popTag();
 		}
 	}
 	
-	changePages();
+	return drawing;
 }

@@ -13,7 +13,20 @@ Drawing::Drawing()
 	_curMouseUp = DISABLED;
 }
 
-/* Set new image
+/* Load methods
+ ___________________________________________________________ */
+
+void Drawing::addDot(Dot d)
+{
+	_pts.push_back(d);
+}
+
+void Drawing::addMouseUp(int m)
+{
+	_mouseUps.push_back(m);
+}
+
+/* Playing methods
  ___________________________________________________________ */
 
 void Drawing::addNormDot(float x, float y)
@@ -27,6 +40,11 @@ void Drawing::addNormDot(float x, float y)
 
 Dot * Drawing::getDot()
 {
+	if(_finished)
+	{
+		return NULL;
+	}
+	
 	Dot * curDot = NULL;
 	
 	long curms = ofGetElapsedTimeMillis() - _playms;

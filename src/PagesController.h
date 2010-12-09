@@ -7,8 +7,9 @@
 #include "PageAnimation.h"
 #include "ofxDirList.h"
 #include "Animation.h"
-#include "PageAnimationImage.h"
+#include "PageAnimationDrawing.h"
 #include "PageAnimationBlank.h"
+#include "ofxXmlSettings.h"
 
 class PagesController : public Animation
 {
@@ -19,14 +20,18 @@ public:
 	
 	void update();
 	void draw();
-	
-	void changePages();
 
-	void assignModelsToViews();
+	void createNewViews();
 	
 private:
+	
+	Drawing getRandomDrawingModel();
 	
 	vector <PageAnimation *> _views;
 	
 	int _blank_page;
+	
+	ofxXmlSettings _xml;
+	
+	
 };

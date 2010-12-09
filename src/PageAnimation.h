@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Animation.h"
+#include "Drawing.h"
 
 class PageAnimation : Animation
 {
@@ -10,6 +11,8 @@ public:
 	PageAnimation() 
 	{
 		_finished = false;
+		
+		_pageModel = NULL;
 	}
 	
 	virtual void update() {}
@@ -23,13 +26,20 @@ public:
 	virtual void mousePressed(int x, int y, int button) {}
 	virtual void mouseReleased(int x, int y, int button) {}
 	
-	bool getFinished() { return _finished; }
+	void setPageModel(Page * pageModel) { _pageModel = pageModel; }
+	void setDrawingModel(Drawing drawingModel) { _drawingModel = drawingModel; }
 	
-	int modelid;
+	Page * getPageModel() { return _pageModel; }
+	Drawing getDrawingModel() { return _drawingModel; }
+	
+	bool getFinished() { return _finished; }
 	
 protected:
 	
 	bool _finished;
+	
+	Page * _pageModel;
+	Drawing _drawingModel;
 	
 private:
 	

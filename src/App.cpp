@@ -29,6 +29,8 @@ App::App()
 	_imageCount = 0;
 }
 
+/* Flag models changed
+ ___________________________________________________________ */
 
 void App::flagModelsChanged() 
 { 
@@ -50,26 +52,16 @@ void App::flagModelsChanged()
 			
 		}
 	}
-	
-	cout << "xLeft: " << xLeft << endl;
-	cout << "xRight: " << xRight << endl;
-	cout << "yTop: " << yTop << endl;
-	cout << "yBot: " << yBot << endl;
-	
+
 	_modelBounds.x = xLeft;
 	_modelBounds.y = yTop;
 	_modelBounds.width = xRight - xLeft;
 	_modelBounds.height = yBot - yTop;
 	
-	cout << "Bonds X: " << _modelBounds.x << endl;
-	cout << "Bonds Y: " << _modelBounds.y << endl;
-	cout << "Bonds Width: " << _modelBounds.width << endl;
-	cout << "Bonds Height: " << _modelBounds.height << endl;
-	
 	_modelsChanged = true; 
 }
 
-/* Getter
+/* Getters
  ___________________________________________________________ */
 
 bool App::modelsChanged()
@@ -101,6 +93,9 @@ Page * App::getModelByID(int id)
 	
 	return NULL;
 }
+
+/* Setters
+ ___________________________________________________________ */
 
 void App::addModel(Page * model)
 {

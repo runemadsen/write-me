@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "Page.h"
 #include "Constants.h"
+#include "ofxDirList.h"
 
 class App  
 {

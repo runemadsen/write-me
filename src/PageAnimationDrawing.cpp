@@ -1,29 +1,25 @@
-#include "PageAnimationBlank.h"
+#include "PageAnimationDrawing.h"
 
 /* Constructor
  ___________________________________________________________ */
 
-PageAnimationBlank::PageAnimationBlank()
+PageAnimationDrawing::PageAnimationDrawing()
 {	
+	
 }
 
 /* Update
  ___________________________________________________________ */
 
-void PageAnimationBlank::update()
+void PageAnimationDrawing::update()
 {	
-	_tween.update();
 	
-	if(_tween.finished())
-	{
-		_finished = true;
-	}
 }
 
 /* Draw
  ___________________________________________________________ */
 
-void PageAnimationBlank::draw()
+void PageAnimationDrawing::draw()
 {	
 	
 }
