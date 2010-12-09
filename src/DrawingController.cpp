@@ -5,11 +5,11 @@
 
 DrawingController::DrawingController()
 {		
-	_paper.loadImage("paper.png");
-	
 	allocateTextures();
 	
 	_drawing = false;
+	
+	_firstPress = true;
 }
 
 void DrawingController::allocateTextures()
@@ -57,6 +57,9 @@ void DrawingController::draw()
 	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
 }
 
+/* Draw points from last pos to cur pos
+ ___________________________________________________________ */
+
 void DrawingController::drawSinceLast()
 {	
 	if(_drawing)
@@ -80,6 +83,9 @@ void DrawingController::drawSinceLast()
 		_d.addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
 	}	
 }
+
+/* Draw a single point
+ ___________________________________________________________ */
 
 void DrawingController::drawPoint(float x, float y)
 {
@@ -109,6 +115,58 @@ void DrawingController::drawPoint(float x, float y)
 	_tex.end();
 }
 
+/* Save drawing
+ ___________________________________________________________ */
+
+void DrawingController::saveDrawing()
+{	
+	_xml.loadFromBuffer("<root></root>");
+	
+	_xml.clear();
+	
+	_xml.addTag(DRAWING);
+	_xml.pushTag(DRAWING, 0);
+	
+	_xml.addTag(POINTS);
+	_xml.pushTag(POINTS, 0);
+	
+	for(int i = 0; i < _d.getSize(); i++)
+	{
+		_xml.addTag(POINT);
+		_xml.addAttribute(POINT, X, ofToString(_d.getDotAtIndex(i)->x, 2), i);
+		_xml.addAttribute(POINT, Y, ofToString(_d.getDotAtIndex(i)->y, 2), i);
+		_xml.addAttribute(POINT, MS, ofToString(_d.getDotAtIndex(i)->ms, 0), i);
+	}
+	
+	_xml.popTag();
+	
+	_xml.addTag(MOUSE_UPS);
+	_xml.pushTag(MOUSE_UPS, 0);
+	
+	for(int i = 0; i < _d.getMouseUpsSize(); i++)
+	{
+		_xml.addTag(MOUSE_UP);
+		_xml.addAttribute(MOUSE_UP, MS, ofToString(_d.getMouseUpAtIndex(i), 0), i);
+	}
+	
+	_xml.popTag();
+	
+	string file = ofToString(ofGetYear());
+	file += "-";
+	file += ofToString(ofGetMonth());
+	file += "-";
+	file += ofToString(ofGetDay());
+	file += "-";
+	file += ofToString(ofGetHours());
+	file += "-";
+	file += ofToString(ofGetMinutes());
+	file += "-";
+	file += ofToString(ofGetSeconds());
+	
+	_xml.saveFile(DRAWING_FOLDER + file + ".xml");
+}
+
+
 /* Events
  ___________________________________________________________ */
 
@@ -128,6 +186,12 @@ void DrawingController::mouseDragged(int x, int y, int button)
 
 void DrawingController::mousePressed(int x, int y, int button)
 {
+	if (_firstPress) 
+	{
+		_d.record();
+		_firstPress = false;
+	}
+	
 	ofRectangle r = App::getInstance()->getModelBounds();
 	
 	_curPos.set(x - r.x, y - r.y);
@@ -148,58 +212,13 @@ void DrawingController::keyPressed(int key)
 {
 	if(key == 'c')
 	{
-		saveDrawing();
+		if(ENABLE_SAVE)
+		{
+			saveDrawing();
+		}
+		
+		_finished = true;
 	}
-}
-
-void DrawingController::saveDrawing()
-{	
-	_xml.loadFromBuffer("<root></root>");
-	
-	_xml.clear();
-	
-	_xml.addTag(DRAWING);
-	_xml.pushTag(DRAWING, 0);
-	
-		_xml.addTag(POINTS);
-		_xml.pushTag(POINTS, 0);
-
-		for(int i = 0; i < _d.getSize(); i++)
-		{
-			_xml.addTag(POINT);
-			_xml.addAttribute(POINT, X, ofToString(_d.getDotAtIndex(i)->x, 2), i);
-			_xml.addAttribute(POINT, Y, ofToString(_d.getDotAtIndex(i)->y, 2), i);
-			_xml.addAttribute(POINT, MS, ofToString(_d.getDotAtIndex(i)->ms, 0), i);
-		}
-		
-		_xml.popTag();
-	
-		_xml.addTag(MOUSE_UPS);
-		_xml.pushTag(MOUSE_UPS, 0);
-	
-		for(int i = 0; i < _d.getMouseUpsSize(); i++)
-		{
-			_xml.addTag(MOUSE_UP);
-			_xml.addAttribute(MOUSE_UP, MS, ofToString(_d.getMouseUpAtIndex(i), 0), i);
-		}
-		
-		_xml.popTag();
-	
-	string file = ofToString(ofGetYear());
-	file += "-";
-	file += ofToString(ofGetMonth());
-	file += "-";
-	file += ofToString(ofGetDay());
-	file += "-";
-	file += ofToString(ofGetHours());
-	file += "-";
-	file += ofToString(ofGetMinutes());
-	file += "-";
-	file += ofToString(ofGetSeconds());
-	
-	_xml.saveFile(DRAWING_FOLDER + file + ".xml");
-	
-	// make sure to load this file into a drawing
 }
 
 /* Show / Hide
@@ -207,7 +226,7 @@ void DrawingController::saveDrawing()
 
 void DrawingController::show()
 {
-	_finished = false;
+
 }
 
 void DrawingController::hide()

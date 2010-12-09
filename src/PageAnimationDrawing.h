@@ -18,6 +18,7 @@ public:
 	void update();
 	void draw();
 	void show();
+	void hide();
 	
 private:
 	
@@ -26,7 +27,8 @@ private:
 	
 	void resetBackground();
 	
-	Tween _tween;
+	Tween _tweenUp;
+	Tween _tweenDown;
 	
 	ofxFBOTexture _tex;
 	float _texCoords[8];

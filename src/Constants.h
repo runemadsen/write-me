@@ -1,3 +1,5 @@
+#define ENABLE_SAVE true
+
 
 // GENERAL SETUP
 #define DISABLED -1

@@ -21,6 +21,7 @@ public:
 	
 	bool isMouseUp();
 	
+	void record();
 	void play();
 	bool isPlaying();
 	

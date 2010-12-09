@@ -26,6 +26,9 @@ PageAnimationDrawing::PageAnimationDrawing()
 	
 	_texCoords[6] = 0;
 	_texCoords[7] = tempH;
+	
+	_tweenUp.setup(100, 255, -255, Easing::LinearEaseIn);
+	_tweenDown.setup(100, 0, 255, Easing::LinearEaseIn);
 }
 
 /* Reset background of texture
@@ -45,7 +48,8 @@ void PageAnimationDrawing::resetBackground()
 
 void PageAnimationDrawing::update()
 {	
-	_tween.update();
+	_tweenUp.update();
+	_tweenDown.update();
 	
 	if(_drawingModel.isPlaying())
 	{
@@ -78,14 +82,14 @@ void PageAnimationDrawing::update()
 	
 	if(_drawingModel.isFinished())
 	{
-		if(!_tween.isPlaying())
+		if(!_tweenDown.isPlaying())
 		{
-			_tween.play();
+			_tweenDown.play();
 		}
 		
-		if(_tween.finished())
+		if(_tweenDown.finished())
 		{
-			_tween.stop();
+			_tweenDown.stop();
 			_finished = true;
 		}
 	}
@@ -107,6 +111,26 @@ void PageAnimationDrawing::draw()
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	_tex.unbind();
+	
+	
+	// mask
+	int a = _tweenUp.num;
+	
+	if(_tweenUp.finished())
+	{
+		a = _tweenDown.num;
+	}
+	
+	ofEnableAlphaBlending();
+	ofSetColor(0, 0, 0, a);
+	
+	ofBeginShape();
+	for (int i = 0; i < _pageModel->pts.size(); i++) 
+	{
+		ofVertex(_pageModel->pts[i].x, _pageModel->pts[i].y);
+	}
+	ofEndShape();
+	ofDisableAlphaBlending();
 }
 
 /* Draw line from last pos to cur pos
@@ -170,6 +194,11 @@ void PageAnimationDrawing::show()
 {	
 	_finished = false;
 	
+	_tweenUp.stop();
+	_tweenDown.stop();
+	
+	_tweenUp.play();
+	
 	resetBackground();
 	
 	_drawingModel.play();
@@ -180,8 +209,12 @@ void PageAnimationDrawing::show()
 	_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
 	
 	_drawing = true;
-	
-	_tween.setup(100, 0, 100, Easing::LinearEaseIn);
+}
+
+void PageAnimationDrawing::hide()
+{
+	_tweenUp.time = _tweenUp.duration;
+	_tweenDown.play();
 }
 
 

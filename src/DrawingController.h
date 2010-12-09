@@ -37,11 +37,11 @@ public:
 	
 private:
 	
+	bool _firstPress;
+	
 	void saveDrawing();
 	
 	ofxFBOTexture _tex;
-	
-	ofImage _paper;
 	
 	bool _drawing;
 	

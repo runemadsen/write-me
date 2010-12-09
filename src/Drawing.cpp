@@ -68,6 +68,11 @@ Dot * Drawing::getDot()
 	}
 }
 
+void Drawing::addMouseUp()
+{
+	_mouseUps.push_back(ofGetElapsedTimeMillis() - _drawms);
+}
+
 bool Drawing::isMouseUp()
 {
 	long curms = ofGetElapsedTimeMillis() - _playms;
@@ -88,9 +93,12 @@ bool Drawing::isMouseUp()
 	}
 }
 
-void Drawing::addMouseUp()
+/* Play
+ ___________________________________________________________ */
+
+void Drawing::record()
 {
-	_mouseUps.push_back(ofGetElapsedTimeMillis() - _drawms);
+	_drawms = ofGetElapsedTimeMillis();
 }
 
 /* Play
@@ -102,7 +110,7 @@ void Drawing::play()
 	_playing = true;
 }
 
-/* Play
+/* Getters
  ___________________________________________________________ */
 
 bool Drawing::isFinished()
