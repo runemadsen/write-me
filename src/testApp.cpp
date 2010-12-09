@@ -17,6 +17,13 @@ void testApp::setup()
 	
 	animations.push_back( new PagesController() );
 	animations.push_back( new DrawingController() );
+	
+	ofAddListener(tablet.penDragged, this, &testApp::onPenDragged);
+	ofAddListener(tablet.penUp, this, &testApp::onPenUp);
+	ofAddListener(tablet.penDown, this, &testApp::onPenDown);
+	ofAddListener(tablet.penEnter, this, &testApp::onPenEnter);
+	ofAddListener(tablet.penLeave, this, &testApp::onPenLeave);
+	ofAddListener(tablet.penMove, this, &testApp::onPenMove);
 }
 
 /* Update
@@ -79,6 +86,9 @@ void testApp::keyPressed(int key)
 	}
 }
 
+/* Mouse Events
+ _________________________________________________________________ */
+
 void testApp::mouseDragged(int x, int y, int button)
 {
 	plotter.mouseDragged(x, y, button);
@@ -102,7 +112,6 @@ void testApp::mouseMoved(int x, int y )
 		if(curAnimation == 0)
 		{
 			changeAnimation(1);
-			cout << "Switching to drawing mode \n";
 			animations[curAnimation]->show();
 		}
 		
@@ -116,3 +125,27 @@ void testApp::mouseReleased(int x, int y, int button)
 }
 
 void testApp::windowResized(int w, int h) {}
+
+/* tableet Events
+ _________________________________________________________________ */
+
+void testApp::onPenDragged(ofxTabletArgs& e)
+{	
+}
+
+void testApp::onPenUp(ofxTabletArgs& e)
+{
+}
+
+void testApp::onPenDown(ofxTabletArgs& e)
+{
+}
+
+void testApp::onPenEnter(ofxTabletArgs& e){
+}
+
+void testApp::onPenLeave(ofxTabletArgs& e){
+}
+
+void testApp::onPenMove(ofxTabletArgs& e){
+}

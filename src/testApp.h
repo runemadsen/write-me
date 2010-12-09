@@ -6,6 +6,7 @@
 #include "PagesController.h"
 #include "DrawingController.h"
 #include "Animation.h"
+#include "ofxTabletOSX.h"
 
 class testApp : public ofBaseApp
 {	
@@ -30,6 +31,15 @@ class testApp : public ofBaseApp
 		vector <Animation *> animations;
 	
 		int curAnimation;
+	
+		ofxTabletOSX tablet;
+	
+		void onPenDragged(ofxTabletArgs& e);
+		void onPenUp(ofxTabletArgs& e);
+		void onPenDown(ofxTabletArgs& e);
+		void onPenEnter(ofxTabletArgs& e);
+		void onPenLeave(ofxTabletArgs& e);
+		void onPenMove(ofxTabletArgs& e);
 };
 
 #endif

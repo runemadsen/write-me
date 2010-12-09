@@ -5,8 +5,6 @@
 
 DrawingController::DrawingController()
 {		
-	//_lastDraw = ofGetElapsedTimeMillis();
-	
 	_paper.loadImage("paper.png");
 	
 	allocateTextures();
@@ -42,12 +40,34 @@ void DrawingController::update()
 		allocateTextures();
 	}
 	
-	drawSinceLast();
-	
-	/*if(ofGetElapsedTimeMillis() - _lastDraw > 3000)
+	if(_d.isPlaying() && !_d.isFinished())
 	{
-		_finished = true;
-	}*/
+		Dot * d = _d.getDot();
+		
+		if(d != NULL)
+		{
+			if(!_drawing)
+			{
+				_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+				_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+				
+				_drawing = true;
+			}
+			
+			ofRectangle r = App::getInstance()->getModelBounds();
+			
+			_lastPos.set(_curPos);
+			
+			_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+		}
+		
+		if (_d.isMouseUp()) 
+		{
+			_drawing = false;
+		}
+	}
+	
+	drawSinceLast();
 }
 
 /* Draw
@@ -83,6 +103,11 @@ void DrawingController::drawSinceLast()
 		}
 		
 		drawPoint(_curPos.x, _curPos.y);
+			
+		if (!_d.isPlaying()) 
+		{
+			_d.addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
+		}
 	}	
 }
 
@@ -144,13 +169,25 @@ void DrawingController::mousePressed(int x, int y, int button)
 void DrawingController::mouseReleased(int x, int y, int button)
 {
 	_drawing = false;
+	
+	if(!_d.isPlaying())
+	{
+		_d.addMouseUp();
+	}
 }
 
 void DrawingController::keyPressed(int key)
 {
 	if(key == 'c')
 	{
-		ofxImage screenGrab;
+		_tex.begin();
+		ofSetColor(240, 240, 240);
+		ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
+		_tex.end();
+		
+		_d.play();
+		
+		/*ofxImage screenGrab;
 		screenGrab.setFromPixels((unsigned char *)_tex.getPixels(), _tex.getWidth(), _tex.getHeight(), OF_IMAGE_COLOR);
 		screenGrab.mirror(false, true);
 		
@@ -158,7 +195,7 @@ void DrawingController::keyPressed(int key)
 		
 		screenGrab.saveImage("images/userimage" + ofToString(num, 0) + ".png");
 		
-		_finished = true;
+		_finished = true;*/
 	}
 }
 
@@ -168,8 +205,6 @@ void DrawingController::keyPressed(int key)
 void DrawingController::show()
 {
 	_finished = false;
-	
-	//_lastDraw = ofGetElapsedTimeMillis();
 }
 
 void DrawingController::hide()

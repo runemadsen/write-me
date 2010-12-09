@@ -7,6 +7,7 @@
 #include "ofxFBOTexture.h"
 #include "ofxVec2f.h"
 #include "ofxImage.h"
+#include "Drawing.h"
 
 class DrawingController : public Animation
 {
@@ -35,7 +36,6 @@ public:
 	
 private:
 	
-	long _lastDraw;
 	ofxFBOTexture _tex;
 	
 	ofImage _paper;
@@ -44,4 +44,6 @@ private:
 	
 	ofxVec2f _lastPos;
 	ofxVec2f _curPos;
+	
+	Drawing _d;
 };
