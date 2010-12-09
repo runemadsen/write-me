@@ -22,6 +22,7 @@ public:
 	
 private:
 	
+	void setupTexture();
 	void drawPoint(float x, float y);
 	void drawSinceLast();
 	

@@ -41,6 +41,8 @@ void DrawingController::update()
 	}
 	
 	drawSinceLast();
+	
+	cout << "HERE \n";
 }
 
 /* Draw
@@ -226,7 +228,7 @@ void DrawingController::keyPressed(int key)
 
 void DrawingController::show()
 {
-
+	_finished = false;
 }
 
 void DrawingController::hide()

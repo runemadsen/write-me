@@ -17,8 +17,8 @@ public:
 	
 	virtual void update() {}
 	virtual void draw() {}
-	virtual void show() {}
-	virtual void hide() {}
+	virtual void show() { _finished = false; }
+	virtual void hide() { _finished = true; }
 	
 	virtual void keyPressed(int key) {}
 	virtual void mouseMoved(int x, int y) {}

@@ -20,6 +20,8 @@ public:
 	
 	void update();
 	void draw();
+	void show();
+	void hide();
 
 	void createNewViews();
 	
@@ -32,6 +34,8 @@ private:
 	int _blank_page;
 	
 	ofxXmlSettings _xml;
+	
+	bool _hiding;
 	
 	
 };

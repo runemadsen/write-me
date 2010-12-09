@@ -6,6 +6,7 @@
 PagesController::PagesController()
 {	
 	_blank_page = DISABLED;
+	_hiding = false;
 }
 
 /* Update
@@ -18,15 +19,30 @@ void PagesController::update()
 		createNewViews();
 	}
 	
+	bool allFinished = true;
+	
 	for(int i = 0; i < _views.size(); i++)
 	{
 		_views[i]->update();
 		
 		if(_views[i]->getFinished())
 		{
-			_views[i]->setDrawingModel(getRandomDrawingModel());
-			_views[i]->show();
+			if(!_hiding)
+			{
+				_views[i]->setDrawingModel(getRandomDrawingModel());
+				_views[i]->show();
+			}
 		}
+		else 
+		{
+			allFinished = false;
+		}
+
+	}
+	
+	if(_hiding && allFinished)
+	{
+		_finished = true;
 	}
 }	
 
@@ -119,4 +135,23 @@ Drawing PagesController::getRandomDrawingModel()
 	}
 	
 	return drawing;
+}
+
+/* Show / hide
+ ___________________________________________________________ */
+
+void PagesController::show()
+{
+	_finished = false;
+	_hiding = false;
+}
+
+void PagesController::hide()
+{
+	_hiding = true;
+	
+	for (int i = 0; i < _views.size(); i++) 
+	{
+		_views[i]->hide();
+	}
 }

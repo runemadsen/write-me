@@ -4,13 +4,23 @@
  ___________________________________________________________ */
 
 PageAnimationDrawing::PageAnimationDrawing()
-{	
-	cout << "Drawing made" << endl;
+{		
+	_drawing = false;
+		
+	_tweenUp.setup(100, 255, -255, Easing::QuadEaseIn);
+	_tweenDown.setup(100, 0, 255, Easing::QuadEaseIn);
 	
+	setupTexture();
+}
+
+/* Setup texture
+ ___________________________________________________________ */
+
+void PageAnimationDrawing::setupTexture()
+{
 	int tempW = 200;
 	int tempH = 280;
 	
-	_drawing = false;
 	_tex.allocate(tempW, tempH, GL_RGB);
 	
 	resetBackground();
@@ -27,8 +37,6 @@ PageAnimationDrawing::PageAnimationDrawing()
 	_texCoords[6] = 0;
 	_texCoords[7] = tempH;
 	
-	_tweenUp.setup(100, 255, -255, Easing::LinearEaseIn);
-	_tweenDown.setup(100, 0, 255, Easing::LinearEaseIn);
 }
 
 /* Reset background of texture
@@ -90,6 +98,7 @@ void PageAnimationDrawing::update()
 		if(_tweenDown.finished())
 		{
 			_tweenDown.stop();
+			cout << "HIDDEN \n";
 			_finished = true;
 		}
 	}
@@ -159,7 +168,7 @@ void PageAnimationDrawing::drawSinceLast()
  ___________________________________________________________ */
 
 void PageAnimationDrawing::drawPoint(float x, float y)
-{
+{	
 	// draw last point also
 	float ranWidth = ofRandom(2, 7);
 	float ranHeight = ofRandom(1, 3);
@@ -213,7 +222,7 @@ void PageAnimationDrawing::show()
 
 void PageAnimationDrawing::hide()
 {
-	_tweenUp.time = _tweenUp.duration;
+	_tweenUp.finish();
 	_tweenDown.play();
 }
 

@@ -40,9 +40,9 @@ void testApp::update()
 	
 	if (animations[curAnimation]->getFinished()) 
 	{
-		int newAnimation = curAnimation == 0 ? 1 : 0;
+		curAnimation = curAnimation == 0 ? 1 : 0;
 		
-		changeAnimation(newAnimation);
+		animations[curAnimation]->show();
 	}
 }
 
@@ -57,18 +57,6 @@ void testApp::draw()
 	{
 		animations[curAnimation]->draw();
 	}
-}
-
-/* Change Animation
- _________________________________________________________________ */
-
-void testApp::changeAnimation(int i)
-{
-	animations[curAnimation]->hide();
-	
-	curAnimation = i;
-	
-	animations[curAnimation]->show();
 }
 
 /* Key Events
@@ -111,8 +99,7 @@ void testApp::mouseMoved(int x, int y )
 	{
 		if(curAnimation == 0)
 		{
-			changeAnimation(1);
-			animations[curAnimation]->show();
+			animations[curAnimation]->hide();
 		}
 		
 		animations[curAnimation]->mouseMoved(x, y);
