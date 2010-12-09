@@ -97,9 +97,6 @@ Drawing PagesController::getRandomDrawingModel()
 					d.y = (float) _xml.getAttribute(POINT, Y, 0.0, i);
 					d.ms = (long) _xml.getAttribute(POINT, MS, 0, i);
 					
-					cout << _xml.getAttribute(POINT, X, 2, i) << endl;
-					cout << _xml.getAttribute(POINT, Y, 2, i) << endl;
-					
 					drawing.addDot(d);
 				}
 				
@@ -112,8 +109,6 @@ Drawing PagesController::getRandomDrawingModel()
 				for (int i = 0; i < _xml.getNumTags(MOUSE_UP); i++) 
 				{
 					drawing.addMouseUp( (long) _xml.getAttribute(MOUSE_UP, MS, 0, i));
-					
-					cout << (long) _xml.getAttribute(MOUSE_UP, MS, 0, i) << endl;
 				}
 				
 				_xml.popTag();

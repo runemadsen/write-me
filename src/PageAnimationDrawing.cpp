@@ -13,11 +13,7 @@ PageAnimationDrawing::PageAnimationDrawing()
 	_drawing = false;
 	_tex.allocate(tempW, tempH, GL_RGB);
 	
-	_tex.begin();
-	ofFill();
-	ofSetColor(240, 240, 240);
-	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
-	_tex.end();
+	resetBackground();
 	
 	_texCoords[0] = 0;
 	_texCoords[1] = 0;
@@ -32,11 +28,25 @@ PageAnimationDrawing::PageAnimationDrawing()
 	_texCoords[7] = tempH;
 }
 
+/* Reset background of texture
+ ___________________________________________________________ */
+
+void PageAnimationDrawing::resetBackground()
+{
+	_tex.begin();
+	ofFill();
+	ofSetColor(240, 240, 240);
+	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
+	_tex.end();
+}
+
 /* Update
  ___________________________________________________________ */
 
 void PageAnimationDrawing::update()
 {	
+	_tween.update();
+	
 	if(_drawingModel.isPlaying())
 	{
 		Dot * d = _drawingModel.getDot();
@@ -57,7 +67,6 @@ void PageAnimationDrawing::update()
 		
 		if (_drawingModel.isMouseUp()) 
 		{
-			cout << "Mouse Up \n";
 			_drawing = false;
 		}
 	}
@@ -65,6 +74,20 @@ void PageAnimationDrawing::update()
 	if(_drawing && !_drawingModel.isFinished())
 	{
 		drawSinceLast();
+	}
+	
+	if(_drawingModel.isFinished())
+	{
+		if(!_tween.isPlaying())
+		{
+			_tween.play();
+		}
+		
+		if(_tween.finished())
+		{
+			_tween.stop();
+			_finished = true;
+		}
 	}
 }
 
@@ -75,9 +98,6 @@ void PageAnimationDrawing::draw()
 {	
 	ofFill();
 	ofSetColor(255, 255, 255);
-	
-	//_tex.draw(_pageModel->pts[0].x, _pageModel->pts[0].y);
-	
 	
 	_tex.bind();
 	
@@ -148,6 +168,10 @@ void PageAnimationDrawing::drawPoint(float x, float y)
 
 void PageAnimationDrawing::show()
 {	
+	_finished = false;
+	
+	resetBackground();
+	
 	_drawingModel.play();
 	
 	Dot * d = _drawingModel.getDotAtIndex(0);
@@ -157,7 +181,7 @@ void PageAnimationDrawing::show()
 	
 	_drawing = true;
 	
-	cout << "Starting to draw \n";
+	_tween.setup(100, 0, 100, Easing::LinearEaseIn);
 }
 
 

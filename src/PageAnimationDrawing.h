@@ -24,6 +24,8 @@ private:
 	void drawPoint(float x, float y);
 	void drawSinceLast();
 	
+	void resetBackground();
+	
 	Tween _tween;
 	
 	ofxFBOTexture _tex;
