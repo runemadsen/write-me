@@ -40,38 +40,6 @@ void DrawingController::update()
 		allocateTextures();
 	}
 	
-	if(_d.isPlaying())
-	{
-		Dot * d = _d.getDot();
-		
-		if(d != NULL)
-		{
-			if(!_drawing)
-			{
-				_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
-				_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
-				
-				_drawing = true;
-			}
-			
-			ofRectangle r = App::getInstance()->getModelBounds();
-			
-			_lastPos.set(_curPos);
-			
-			_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
-		}
-		
-		if (_d.isMouseUp()) 
-		{
-			_drawing = false;
-		}
-	}
-	
-	if(_d.isFinished())
-	{
-		_drawing = false;
-	}
-	
 	drawSinceLast();
 }
 
@@ -109,10 +77,7 @@ void DrawingController::drawSinceLast()
 		
 		drawPoint(_curPos.x, _curPos.y);
 			
-		if (!_d.isPlaying()) 
-		{
-			_d.addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
-		}
+		_d.addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
 	}	
 }
 
@@ -149,7 +114,7 @@ void DrawingController::drawPoint(float x, float y)
 
 void DrawingController::mouseMoved(int x, int y)
 {
-	//_lastDraw = ofGetElapsedTimeMillis();
+
 }
 
 void DrawingController::mouseDragged(int x, int y, int button)
@@ -175,34 +140,15 @@ void DrawingController::mouseReleased(int x, int y, int button)
 {
 	_drawing = false;
 	
-	if(!_d.isPlaying())
-	{
-		_d.addMouseUp();
-	}
+	// make sure we don't get mouseups after finished?
+	_d.addMouseUp();
 }
 
 void DrawingController::keyPressed(int key)
 {
 	if(key == 'c')
 	{
-		/*_tex.begin();
-		ofSetColor(240, 240, 240);
-		ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
-		_tex.end();
-		
-		_d.play();*/
-		
 		saveDrawing();
-		
-		/*ofxImage screenGrab;
-		screenGrab.setFromPixels((unsigned char *)_tex.getPixels(), _tex.getWidth(), _tex.getHeight(), OF_IMAGE_COLOR);
-		screenGrab.mirror(false, true);
-		
-		int num = App::getInstance()->nextImage();
-		
-		screenGrab.saveImage("images/userimage" + ofToString(num, 0) + ".png");
-		
-		_finished = true;*/
 	}
 }
 
@@ -221,9 +167,9 @@ void DrawingController::saveDrawing()
 		for(int i = 0; i < _d.getSize(); i++)
 		{
 			_xml.addTag(POINT);
-			_xml.addAttribute(POINT, X, ofToString(_d.getDotAtIndex(i)->x, 1), i);
-			_xml.addAttribute(POINT, Y, ofToString(_d.getDotAtIndex(i)->y, 1), i);
-			_xml.addAttribute(POINT, MS, ofToString(_d.getDotAtIndex(i)->ms, 1), i);
+			_xml.addAttribute(POINT, X, ofToString(_d.getDotAtIndex(i)->x, 2), i);
+			_xml.addAttribute(POINT, Y, ofToString(_d.getDotAtIndex(i)->y, 2), i);
+			_xml.addAttribute(POINT, MS, ofToString(_d.getDotAtIndex(i)->ms, 0), i);
 		}
 		
 		_xml.popTag();
@@ -234,7 +180,7 @@ void DrawingController::saveDrawing()
 		for(int i = 0; i < _d.getMouseUpsSize(); i++)
 		{
 			_xml.addTag(MOUSE_UP);
-			_xml.addAttribute(MOUSE_UP, MS, ofToString(_d.getMouseUpAtIndex(i), 1), i);
+			_xml.addAttribute(MOUSE_UP, MS, ofToString(_d.getMouseUpAtIndex(i), 0), i);
 		}
 		
 		_xml.popTag();

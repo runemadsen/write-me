@@ -25,8 +25,7 @@ void PagesController::update()
 		if(_views[i]->getFinished())
 		{
 			_views[i]->setDrawingModel(getRandomDrawingModel());
-			
-			// play
+			_views[i]->show();
 		}
 	}
 }	
@@ -57,12 +56,13 @@ void PagesController::createNewViews()
 	
 	_views.clear();
 	
-	// loop through modelsnand create views
+	// loop through models and create views
 	for (int i = 0; i < app->getModelsSize(); i++) 
 	{		
 		PageAnimation * view = new PageAnimationDrawing();
 		view->setPageModel(app->getModelByIndex(i));
 		view->setDrawingModel(getRandomDrawingModel());
+		view->show();
 		_views.push_back(view);
 	}
 }
@@ -73,7 +73,7 @@ void PagesController::createNewViews()
 Drawing PagesController::getRandomDrawingModel()
 {
 	ofxDirList DIR;
-	DIR.allowExt("png");
+	DIR.allowExt("xml");
 	
 	int numFiles = DIR.listDir(DRAWING_FOLDER);
 	
@@ -93,9 +93,12 @@ Drawing PagesController::getRandomDrawingModel()
 				for (int i = 0; i < _xml.getNumTags(POINT); i++) 
 				{
 					Dot d;
-					d.x = (float) _xml.getAttribute(POINT, X, 0, i);
-					d.y = (float) _xml.getAttribute(POINT, Y, 0, i);
+					d.x = (float) _xml.getAttribute(POINT, X, 0.0, i);
+					d.y = (float) _xml.getAttribute(POINT, Y, 0.0, i);
 					d.ms = (long) _xml.getAttribute(POINT, MS, 0, i);
+					
+					cout << _xml.getAttribute(POINT, X, 2, i) << endl;
+					cout << _xml.getAttribute(POINT, Y, 2, i) << endl;
 					
 					drawing.addDot(d);
 				}
@@ -109,6 +112,8 @@ Drawing PagesController::getRandomDrawingModel()
 				for (int i = 0; i < _xml.getNumTags(MOUSE_UP); i++) 
 				{
 					drawing.addMouseUp( (long) _xml.getAttribute(MOUSE_UP, MS, 0, i));
+					
+					cout << (long) _xml.getAttribute(MOUSE_UP, MS, 0, i) << endl;
 				}
 				
 				_xml.popTag();
