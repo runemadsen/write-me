@@ -28,7 +28,6 @@ private:
 	
 	void resetBackground();
 	
-	Tween _tweenUp;
 	Tween _tweenDown;
 	
 	ofxFBOTexture _tex;

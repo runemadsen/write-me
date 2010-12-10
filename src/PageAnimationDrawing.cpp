@@ -7,7 +7,6 @@ PageAnimationDrawing::PageAnimationDrawing()
 {		
 	_drawing = false;
 		
-	_tweenUp.setup(100, 255, -255, Easing::QuadEaseIn);
 	_tweenDown.setup(100, 0, 255, Easing::QuadEaseIn);
 	
 	setupTexture();
@@ -46,7 +45,7 @@ void PageAnimationDrawing::resetBackground()
 {
 	_tex.begin();
 	ofFill();
-	ofSetColor(240, 240, 240);
+	ofSetColor(255, 255, 255);
 	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
 	_tex.end();
 }
@@ -56,7 +55,6 @@ void PageAnimationDrawing::resetBackground()
 
 void PageAnimationDrawing::update()
 {	
-	_tweenUp.update();
 	_tweenDown.update();
 	
 	if(_drawingModel.isPlaying())
@@ -98,7 +96,6 @@ void PageAnimationDrawing::update()
 		if(_tweenDown.finished())
 		{
 			_tweenDown.stop();
-			cout << "HIDDEN \n";
 			_finished = true;
 		}
 	}
@@ -121,17 +118,8 @@ void PageAnimationDrawing::draw()
 	
 	_tex.unbind();
 	
-	
-	// mask
-	int a = _tweenUp.num;
-	
-	if(_tweenUp.finished())
-	{
-		a = _tweenDown.num;
-	}
-	
 	ofEnableAlphaBlending();
-	ofSetColor(0, 0, 0, a);
+	ofSetColor(255, 255, 255, _tweenDown.num);
 	
 	ofBeginShape();
 	for (int i = 0; i < _pageModel->pts.size(); i++) 
@@ -203,11 +191,6 @@ void PageAnimationDrawing::show()
 {	
 	_finished = false;
 	
-	_tweenUp.stop();
-	_tweenDown.stop();
-	
-	_tweenUp.play();
-	
 	resetBackground();
 	
 	_drawingModel.play();
@@ -222,7 +205,6 @@ void PageAnimationDrawing::show()
 
 void PageAnimationDrawing::hide()
 {
-	_tweenUp.finish();
 	_tweenDown.play();
 }
 

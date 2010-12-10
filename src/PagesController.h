@@ -34,8 +34,4 @@ private:
 	int _blank_page;
 	
 	ofxXmlSettings _xml;
-	
-	bool _hiding;
-	
-	
 };
