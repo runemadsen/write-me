@@ -25,17 +25,65 @@ void DrawingController::allocateTextures()
 	cout << "Drawing Texture at: " << r.x << " , " << r.y << endl;
 		
 	_tex.allocate(r.width, r.height, GL_RGB);
+	_mask.allocate(r.width, r.height, GL_RGBA);
 	
 	resetTexture();
 }
 
 void DrawingController::resetTexture()
 {
+	App * app = App::getInstance();
+	ofRectangle r = App::getInstance()->getModelBounds();
+	
 	_tex.begin();
 	ofFill();
-	ofSetColor(240, 240, 240);
+	ofSetColor(255, 255, 255);
 	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
 	_tex.end();
+	
+	_mask.begin();
+	ofFill();
+	ofSetColor(0, 0, 0);
+	ofRect(0, 0, _mask.getWidth(), _mask.getHeight());
+	
+	ofSetColor(255, 0, 0);
+	for (int i = 0; i < app->getModelsSize(); i++) 
+	{
+		Page * model = app->getModelByIndex(i);
+		
+		ofBeginShape();
+		
+		for (int j = 0; j < model->pts.size(); j++) 
+		{
+			cout << "Drawing point " << model->pts[j].x << " , " << model->pts[j].y << endl;
+			ofVertex(model->pts[j].x - r.x, model->pts[j].y - r.y);
+		}
+		
+		ofEndShape(true);
+	}
+	
+	_mask.end();
+	
+	unsigned char * pix = (unsigned char *) _mask.getPixels();
+	
+	for(int i = 0; i < _mask.getWidth() * _mask.getHeight(); i++)
+	{
+		if(pix[i * 4] == 255)
+		{
+			pix[i * 4 + 3] = 0; 	// alpha
+		}
+		else 
+		{
+			pix[i * 4 + 3] = 255; 	// alpha
+		}
+
+		pix[i * 4] = 0;	// r
+		pix[i * 4 + 1] = 0;	// g
+		pix[i * 4 + 2] = 0;   // b
+	}
+	
+	_finalMask.allocate(_mask.getWidth(), _mask.getHeight(), GL_RGBA);
+	_finalMask.loadData(pix, _mask.getWidth(), _mask.getHeight(), GL_RGBA);
 }
 
 /* Update
@@ -59,28 +107,30 @@ void DrawingController::update()
 void DrawingController::draw()
 {	
 	ofFill();
-	ofSetColor(255, 255, 255);
+	ofSetColor(0, 0, 0);
 	ofRect(0, 0, ofGetWidth(), ofGetHeight());
+	
+	drawTexture();
+	
+	//drawSaveImage();
+	
+	drawMouse();
+}
+
+/* Draw texture
+ ___________________________________________________________ */
+
+void DrawingController::drawTexture()
+{
+	ofSetColor(255, 255, 255);
 	
 	ofRectangle r = App::getInstance()->getModelBounds();
 	
 	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
 	
-	drawSaveImage();
-	
-	drawMouse();
-}
-
-/* Draw mouse
- ___________________________________________________________ */
-
-void DrawingController::drawMouse()
-{
-	ofSetColor(0, 0, 0);
-	ofFill();
-	ofCircle(_mousePos.x, _mousePos.y, 5);
-	ofNoFill();
-	ofCircle(_mousePos.x, _mousePos.y, 5);
+	ofEnableAlphaBlending();
+	_finalMask.draw(r.x, r.y, _mask.getWidth(), _mask.getHeight());
+	ofDisableAlphaBlending();
 }
 
 /* Draw save image
@@ -105,6 +155,18 @@ void DrawingController::drawSaveImage()
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		_saveImg.getTextureReference().unbind();
 	}
+}
+
+/* Draw mouse
+ ___________________________________________________________ */
+
+void DrawingController::drawMouse()
+{
+	ofSetColor(0, 0, 0);
+	ofFill();
+	ofCircle(_mousePos.x, _mousePos.y, 5);
+	ofNoFill();
+	ofCircle(_mousePos.x, _mousePos.y, 5);
 }
 
 /* Draw points from last pos to cur pos
@@ -223,21 +285,23 @@ void DrawingController::saveDrawing()
 void DrawingController::mouseMoved(int x, int y)
 {
 	ofRectangle r = App::getInstance()->getModelBounds();
-	
-	float normX = (float) x / (float) ofGetWidth();
-	float normY = (float) y / (float) ofGetHeight();
-	
-	_mousePos.x = r.x + (normX * r.width);
-	_mousePos.y = r.y + (normY * r.height);
+	ofPoint mousePos = getMousePosInTexture(x, y);
+		
+	_mousePos.x = r.x + mousePos.x;
+	_mousePos.y = r.y + mousePos.y;
 }
 
 void DrawingController::mouseDragged(int x, int y, int button)
 {
 	ofRectangle r = App::getInstance()->getModelBounds();
+	ofPoint mousePos = getMousePosInTexture(x, y);
+	
+	_mousePos.x = r.x + mousePos.x;
+	_mousePos.y = r.y + mousePos.y;
 	
 	_lastPos.set(_curPos);
 	
-	_curPos.set(x - r.x, y - r.y);
+	_curPos.set(mousePos.x, mousePos.y);
 }
 
 void DrawingController::mousePressed(int x, int y, int button)
@@ -249,9 +313,10 @@ void DrawingController::mousePressed(int x, int y, int button)
 	}
 	
 	ofRectangle r = App::getInstance()->getModelBounds();
+	ofPoint mousePos = getMousePosInTexture(x, y);
 	
-	_curPos.set(x - r.x, y - r.y);
-	_lastPos.set(x - r.x, y - r.y);
+	_curPos.set(mousePos.x, mousePos.y);
+	_lastPos.set(mousePos.x, mousePos.y);
 	
 	_drawing = true;
 }
@@ -278,6 +343,26 @@ void DrawingController::keyPressed(int key)
 		reset();
 	}
 }
+
+
+/* Tools
+ ___________________________________________________________ */
+
+ofPoint DrawingController::getMousePosInTexture(int x, int y)
+{
+	ofRectangle r = App::getInstance()->getModelBounds();
+	
+	ofPoint pos;
+	
+	float normX = (float) x / (float) ofGetWidth();
+	float normY = (float) y / (float) ofGetHeight();
+	
+	pos.x = normX * r.width;
+	pos.y = normY * r.height;
+	
+	return pos;
+}
+
 
 void DrawingController::reset()
 {

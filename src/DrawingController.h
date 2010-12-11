@@ -44,10 +44,15 @@ private:
 	
 	bool _firstPress;
 	
+	void drawTexture();
 	void drawMouse();
 	void saveDrawing();
 	
+	ofPoint getMousePosInTexture(int x, int y);
+	
 	ofxFBOTexture _tex;
+	ofxFBOTexture _mask;
+	ofTexture _finalMask;
 	
 	bool _drawing;
 	
