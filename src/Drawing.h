@@ -32,6 +32,8 @@ public:
 	Dot * getDotAtIndex(int i) { return &_pts[i]; }
 	int getMouseUpAtIndex(int i ) { return _mouseUps[i]; }
 	
+	void reset();
+	
 private:
 	
 	vector <Dot> _pts;

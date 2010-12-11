@@ -10,7 +10,12 @@ DrawingController::DrawingController()
 	_drawing = false;
 	
 	_firstPress = true;
+	
+	_saveImg.loadImage("clicktosave.png");
 }
+
+/* Texture methods
+ ___________________________________________________________ */
 
 void DrawingController::allocateTextures()
 {
@@ -21,6 +26,11 @@ void DrawingController::allocateTextures()
 		
 	_tex.allocate(r.width, r.height, GL_RGB);
 	
+	resetTexture();
+}
+
+void DrawingController::resetTexture()
+{
 	_tex.begin();
 	ofFill();
 	ofSetColor(240, 240, 240);
@@ -41,8 +51,6 @@ void DrawingController::update()
 	}
 	
 	drawSinceLast();
-	
-	cout << "HERE \n";
 }
 
 /* Draw
@@ -57,6 +65,46 @@ void DrawingController::draw()
 	ofRectangle r = App::getInstance()->getModelBounds();
 	
 	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
+	
+	drawSaveImage();
+	
+	drawMouse();
+}
+
+/* Draw mouse
+ ___________________________________________________________ */
+
+void DrawingController::drawMouse()
+{
+	ofSetColor(0, 0, 0);
+	ofFill();
+	ofCircle(_mousePos.x, _mousePos.y, 5);
+	ofNoFill();
+	ofCircle(_mousePos.x, _mousePos.y, 5);
+}
+
+/* Draw save image
+ ___________________________________________________________ */
+
+void DrawingController::drawSaveImage()
+{
+	App * app = App::getInstance();
+	
+	int s = app->getModelsSize();
+	
+	if(s > 0)
+	{
+		Page * lastModel = app->getModelByIndex(s - 1);
+		
+		float saveCoords[8] = {0, 0, _saveImg.width, 0, _saveImg.width, _saveImg.height, 0, _saveImg.height};
+		
+		_saveImg.getTextureReference().bind();
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, 0, &saveCoords[0]);
+		ofQuad2D(lastModel->pts[0].x, lastModel->pts[0].y, lastModel->pts[1].x, lastModel->pts[1].y, lastModel->pts[2].x, lastModel->pts[2].y, lastModel->pts[3].x, lastModel->pts[3].y);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		_saveImg.getTextureReference().unbind();
+	}
 }
 
 /* Draw points from last pos to cur pos
@@ -174,7 +222,13 @@ void DrawingController::saveDrawing()
 
 void DrawingController::mouseMoved(int x, int y)
 {
-
+	ofRectangle r = App::getInstance()->getModelBounds();
+	
+	float normX = (float) x / (float) ofGetWidth();
+	float normY = (float) y / (float) ofGetHeight();
+	
+	_mousePos.x = r.x + (normX * r.width);
+	_mousePos.y = r.y + (normY * r.height);
 }
 
 void DrawingController::mouseDragged(int x, int y, int button)
@@ -220,7 +274,16 @@ void DrawingController::keyPressed(int key)
 		}
 		
 		_finished = true;
+		
+		reset();
 	}
+}
+
+void DrawingController::reset()
+{
+	resetTexture();
+	
+	_d.reset();
 }
 
 /* Show / Hide

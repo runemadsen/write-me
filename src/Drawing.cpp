@@ -5,12 +5,7 @@
 
 Drawing::Drawing()
 {
-	_drawms = 0;
-	_playing = false;
-	_finished = false;
-	
-	_curDot = DISABLED;
-	_curMouseUp = DISABLED;
+	reset();
 }
 
 /* Load methods
@@ -93,7 +88,7 @@ bool Drawing::isMouseUp()
 	}
 }
 
-/* Play
+/* Record
  ___________________________________________________________ */
 
 void Drawing::record()
@@ -108,6 +103,21 @@ void Drawing::play()
 {
 	_playms = ofGetElapsedTimeMillis();
 	_playing = true;
+}
+
+/* Reset
+ ___________________________________________________________ */
+
+void Drawing::reset()
+{
+	_drawms = 0;
+	_playing = false;
+	_finished = false;
+	
+	_curDot = DISABLED;
+	_curMouseUp = DISABLED;
+	
+	_pts.erase(_pts.begin(), _pts.end());
 }
 
 /* Getters

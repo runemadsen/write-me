@@ -9,6 +9,7 @@
 #include "ofxImage.h"
 #include "Drawing.h"
 #include "ofxXmlSettings.h"
+#include "ofQuad.h"
 
 class DrawingController : public Animation
 {
@@ -32,13 +33,18 @@ public:
 	void drawSinceLast();
 	
 	void allocateTextures();
+	void resetTexture();
 	
 	void drawPoint(float x, float y);
+	void drawSaveImage();
+	
+	void reset();
 	
 private:
 	
 	bool _firstPress;
 	
+	void drawMouse();
 	void saveDrawing();
 	
 	ofxFBOTexture _tex;
@@ -51,4 +57,8 @@ private:
 	Drawing _d;
 	
 	ofxXmlSettings _xml;
+	
+	ofImage _saveImg;
+	
+	ofPoint _mousePos;
 };

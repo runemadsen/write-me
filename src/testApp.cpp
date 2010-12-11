@@ -24,6 +24,8 @@ void testApp::setup()
 	ofAddListener(tablet.penEnter, this, &testApp::onPenEnter);
 	ofAddListener(tablet.penLeave, this, &testApp::onPenLeave);
 	ofAddListener(tablet.penMove, this, &testApp::onPenMove);
+	
+	ofHideCursor();
 }
 
 /* Update
@@ -65,6 +67,15 @@ void testApp::draw()
 void testApp::keyPressed(int key)
 {
 	plotter.keyPressed(key);
+	
+	if(plotter.getRecordMode())
+	{
+		ofShowCursor();
+	}
+	else 
+	{
+		ofHideCursor();
+	}
 	
 	animations[curAnimation]->keyPressed(key);
 	

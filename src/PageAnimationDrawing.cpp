@@ -43,6 +43,8 @@ void PageAnimationDrawing::setupTexture()
 
 void PageAnimationDrawing::resetBackground()
 {
+	cout << "Resetting background" << endl;
+	
 	_tex.begin();
 	ofFill();
 	ofSetColor(255, 255, 255);
@@ -97,6 +99,8 @@ void PageAnimationDrawing::update()
 		{
 			_tweenDown.stop();
 			_finished = true;
+			
+			cout << "Setting finished \n ";
 		}
 	}
 }
@@ -189,6 +193,8 @@ void PageAnimationDrawing::drawPoint(float x, float y)
 
 void PageAnimationDrawing::show()
 {	
+	cout << "Show" << endl;
+	
 	_finished = false;
 	
 	resetBackground();
@@ -205,6 +211,8 @@ void PageAnimationDrawing::show()
 
 void PageAnimationDrawing::hide()
 {
+	cout << "Hide" << endl;
+	
 	_tweenDown.play();
 }
 
