@@ -135,6 +135,7 @@ void Drawing::reset()
 	_curMouseUp = DISABLED;
 	
 	_pts.erase(_pts.begin(), _pts.end());
+	_mouseUps.erase(_mouseUps.begin(), _mouseUps.end());
 }
 
 /* Getters
