@@ -22,6 +22,7 @@ public:
 	bool isMouseUp();
 	
 	void record();
+	void stopRecording();
 	void play();
 	bool isPlaying();
 	
@@ -47,5 +48,7 @@ private:
 	
 	int _curDot;
 	int _curMouseUp;
+	
+	bool _recording;
 	
 };

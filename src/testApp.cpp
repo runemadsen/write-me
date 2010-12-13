@@ -110,6 +110,8 @@ void testApp::mouseMoved(int x, int y )
 	{
 		if(curAnimation == 0)
 		{
+			cout << "Switching to Drawing Controller" << endl;
+			
 			animations[curAnimation]->hide();
 		}
 		

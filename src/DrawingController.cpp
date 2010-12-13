@@ -12,6 +12,8 @@ DrawingController::DrawingController()
 	_firstPress = true;
 	
 	_saveImg.loadImage("clicktosave.png");
+	
+	_fader.setup(50, 100, 255, Easing::QuartEaseIn, 0, 2);
 }
 
 /* Texture methods
@@ -55,7 +57,6 @@ void DrawingController::resetTexture()
 		
 		for (int j = 0; j < model->pts.size(); j++) 
 		{
-			cout << "Drawing point " << model->pts[j].x << " , " << model->pts[j].y << endl;
 			ofVertex(model->pts[j].x - r.x, model->pts[j].y - r.y);
 		}
 		
@@ -91,6 +92,8 @@ void DrawingController::resetTexture()
 
 void DrawingController::update()
 {	
+	_fader.update();
+	
 	ofRectangle r = App::getInstance()->getModelBounds();
 	
 	if(r.width != _tex.getWidth() || r.height != _tex.getHeight())
@@ -126,10 +129,15 @@ void DrawingController::drawTexture()
 	
 	ofRectangle r = App::getInstance()->getModelBounds();
 	
-	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
 	
 	ofEnableAlphaBlending();
+	
+	ofSetColor(255, 255, 255, _fader.num);
+	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
+	
+	ofSetColor(0, 0, 0, 255);
 	_finalMask.draw(r.x, r.y, _mask.getWidth(), _mask.getHeight());
+	
 	ofDisableAlphaBlending();
 }
 
@@ -309,6 +317,7 @@ void DrawingController::mousePressed(int x, int y, int button)
 	if (_firstPress) 
 	{
 		_d.record();
+		
 		_firstPress = false;
 	}
 	
@@ -338,9 +347,9 @@ void DrawingController::keyPressed(int key)
 			saveDrawing();
 		}
 		
-		_finished = true;
-		
 		reset();
+		
+		_finished = true;
 	}
 }
 
@@ -368,6 +377,9 @@ void DrawingController::reset()
 {
 	resetTexture();
 	
+	_firstPress = true;
+	_fader.stop();
+	_d.stopRecording();
 	_d.reset();
 }
 
@@ -377,9 +389,12 @@ void DrawingController::reset()
 void DrawingController::show()
 {
 	_finished = false;
+	_fader.play();
 }
 
 void DrawingController::hide()
 {
 	_finished = false;
+	
+	reset();
 }

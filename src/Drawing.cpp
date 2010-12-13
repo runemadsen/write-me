@@ -5,6 +5,8 @@
 
 Drawing::Drawing()
 {
+	_recording = false;
+	
 	reset();
 }
 
@@ -23,15 +25,6 @@ void Drawing::addMouseUp(int m)
 
 /* Playing methods
  ___________________________________________________________ */
-
-void Drawing::addNormDot(float x, float y)
-{
-	Dot d;
-	d.x = x;
-	d.y = y;
-	d.ms = ofGetElapsedTimeMillis() - _drawms;
-	_pts.push_back(d);
-}
 
 Dot * Drawing::getDot()
 {
@@ -63,11 +56,6 @@ Dot * Drawing::getDot()
 	}
 }
 
-void Drawing::addMouseUp()
-{
-	_mouseUps.push_back(ofGetElapsedTimeMillis() - _drawms);
-}
-
 bool Drawing::isMouseUp()
 {
 	long curms = ofGetElapsedTimeMillis() - _playms;
@@ -88,12 +76,41 @@ bool Drawing::isMouseUp()
 	}
 }
 
+/* Recording methods
+ ___________________________________________________________ */
+
+void Drawing::addMouseUp()
+{
+	if(_recording)
+	{
+		_mouseUps.push_back(ofGetElapsedTimeMillis() - _drawms);
+	}
+}
+
+void Drawing::addNormDot(float x, float y)
+{
+	if(_recording)
+	{
+		Dot d;
+		d.x = x;
+		d.y = y;
+		d.ms = ofGetElapsedTimeMillis() - _drawms;
+		_pts.push_back(d);
+	}
+}
+
 /* Record
  ___________________________________________________________ */
 
 void Drawing::record()
 {
+	_recording = true;
 	_drawms = ofGetElapsedTimeMillis();
+}
+
+void Drawing::stopRecording()
+{
+	_recording = false;
 }
 
 /* Play

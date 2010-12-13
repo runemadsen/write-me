@@ -79,6 +79,8 @@ void PageAnimationDrawing::update()
 		
 		if (_drawingModel.isMouseUp()) 
 		{
+			cout << "Mouse up" << endl;
+			
 			_drawing = false;
 		}
 	}
@@ -152,6 +154,8 @@ void PageAnimationDrawing::drawSinceLast()
 		
 		drawPoint(xPos, yPos);
 	}
+	
+	//cout << "Drawing a point" << endl;
 	
 	drawPoint(_curPos.x, _curPos.y);
 }

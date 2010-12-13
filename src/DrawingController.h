@@ -10,6 +10,7 @@
 #include "Drawing.h"
 #include "ofxXmlSettings.h"
 #include "ofQuad.h"
+#include "Tween.h"
 
 class DrawingController : public Animation
 {
@@ -66,4 +67,8 @@ private:
 	ofImage _saveImg;
 	
 	ofPoint _mousePos;
+	
+	Tween _fader;
+	
+	TweenTimer _exitTimer;
 };

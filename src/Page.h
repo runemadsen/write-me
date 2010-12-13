@@ -10,7 +10,7 @@ public:
 	
 	void addDefaultPoints(int xPos, int yPos)
 	{
-		int margin = 40;
+		int margin = 20;
 		
 		ofxVec2f pt;
 		
