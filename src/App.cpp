@@ -75,6 +75,8 @@ void App::loadDrawingModels()
 	{
 		createDrawingModelFromXML(DIR.getName(i));
 	}
+	
+	cout << "Loaded " << numFiles << " drawings " << endl;
 }
 
 void App::createDrawingModelFromXML(string fileName)

@@ -111,6 +111,8 @@ void Drawing::record()
 void Drawing::stopRecording()
 {
 	_recording = false;
+	
+	reset();
 }
 
 /* Play
@@ -133,9 +135,6 @@ void Drawing::reset()
 	
 	_curDot = DISABLED;
 	_curMouseUp = DISABLED;
-	
-	_pts.erase(_pts.begin(), _pts.end());
-	_mouseUps.erase(_mouseUps.begin(), _mouseUps.end());
 }
 
 /* Getters

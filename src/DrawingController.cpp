@@ -7,6 +7,8 @@ DrawingController::DrawingController()
 {		
 	allocateTextures();
 	
+	_d = new Drawing();
+	
 	_drawing = false;
 	
 	_firstPress = true;
@@ -115,8 +117,6 @@ void DrawingController::draw()
 	
 	drawTexture();
 	
-	//drawSaveImage();
-	
 	drawMouse();
 }
 
@@ -138,30 +138,6 @@ void DrawingController::drawTexture()
 	_finalMask.draw(r.x, r.y, _mask.getWidth(), _mask.getHeight());
 	
 	ofDisableAlphaBlending();
-}
-
-/* Draw save image
- ___________________________________________________________ */
-
-void DrawingController::drawSaveImage()
-{
-	App * app = App::getInstance();
-	
-	int s = app->getPageModelsSize();
-	
-	if(s > 0)
-	{
-		Page * lastModel = app->getPageModelByIndex(s - 1);
-		
-		float saveCoords[8] = {0, 0, _saveImg.width, 0, _saveImg.width, _saveImg.height, 0, _saveImg.height};
-		
-		_saveImg.getTextureReference().bind();
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, 0, &saveCoords[0]);
-		ofQuad2D(lastModel->pts[0].x, lastModel->pts[0].y, lastModel->pts[1].x, lastModel->pts[1].y, lastModel->pts[2].x, lastModel->pts[2].y, lastModel->pts[3].x, lastModel->pts[3].y);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		_saveImg.getTextureReference().unbind();
-	}
 }
 
 /* Draw mouse
@@ -199,7 +175,7 @@ void DrawingController::drawSinceLast()
 		
 		drawPoint(_curPos.x, _curPos.y);
 			
-		_d.addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
+		_d->addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
 	}	
 }
 
@@ -249,12 +225,12 @@ void DrawingController::saveDrawing()
 	_xml.addTag(POINTS);
 	_xml.pushTag(POINTS, 0);
 	
-	for(int i = 0; i < _d.getSize(); i++)
+	for(int i = 0; i < _d->getSize(); i++)
 	{
 		_xml.addTag(POINT);
-		_xml.addAttribute(POINT, X, ofToString(_d.getDotAtIndex(i)->x, 2), i);
-		_xml.addAttribute(POINT, Y, ofToString(_d.getDotAtIndex(i)->y, 2), i);
-		_xml.addAttribute(POINT, MS, ofToString(_d.getDotAtIndex(i)->ms, 0), i);
+		_xml.addAttribute(POINT, X, ofToString(_d->getDotAtIndex(i)->x, 2), i);
+		_xml.addAttribute(POINT, Y, ofToString(_d->getDotAtIndex(i)->y, 2), i);
+		_xml.addAttribute(POINT, MS, ofToString(_d->getDotAtIndex(i)->ms, 0), i);
 	}
 	
 	_xml.popTag();
@@ -262,10 +238,10 @@ void DrawingController::saveDrawing()
 	_xml.addTag(MOUSE_UPS);
 	_xml.pushTag(MOUSE_UPS, 0);
 	
-	for(int i = 0; i < _d.getMouseUpsSize(); i++)
+	for(int i = 0; i < _d->getMouseUpsSize(); i++)
 	{
 		_xml.addTag(MOUSE_UP);
-		_xml.addAttribute(MOUSE_UP, MS, ofToString(_d.getMouseUpAtIndex(i), 0), i);
+		_xml.addAttribute(MOUSE_UP, MS, ofToString(_d->getMouseUpAtIndex(i), 0), i);
 	}
 	
 	_xml.popTag();
@@ -315,7 +291,7 @@ void DrawingController::mousePressed(int x, int y, int button)
 {
 	if (_firstPress) 
 	{
-		_d.record();
+		_d->record();
 		
 		_firstPress = false;
 	}
@@ -334,7 +310,7 @@ void DrawingController::mouseReleased(int x, int y, int button)
 	_drawing = false;
 	
 	// make sure we don't get mouseups after finished?
-	_d.addMouseUp();
+	_d->addMouseUp();
 }
 
 void DrawingController::keyPressed(int key)
@@ -344,6 +320,8 @@ void DrawingController::keyPressed(int key)
 		if(ENABLE_SAVE)
 		{
 			saveDrawing();
+			
+			App::getInstance()->addDrawingModel(_d);
 		}
 		
 		reset();
@@ -378,8 +356,9 @@ void DrawingController::reset()
 	
 	_firstPress = true;
 	_fader.stop();
-	_d.stopRecording();
-	_d.reset();
+	
+	_d->stopRecording();
+	_d = new Drawing();
 }
 
 /* Show / Hide

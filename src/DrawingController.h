@@ -60,7 +60,7 @@ private:
 	ofxVec2f _lastPos;
 	ofxVec2f _curPos;
 	
-	Drawing _d;
+	Drawing * _d;
 	
 	ofxXmlSettings _xml;
 	
