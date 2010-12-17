@@ -36,7 +36,7 @@ void ModelPlotter::draw()
 		ofRect(0, 0, frame_size, ofGetHeight());
 		ofRect(ofGetWidth() - frame_size, 0, frame_size, ofGetHeight());
 		
-		for(int i = 0; i < App::getInstance()->getModelsSize(); i++)
+		for(int i = 0; i < App::getInstance()->getPageModelsSize(); i++)
 		{
 			ofSetColor(0, 255, 0);
 			
@@ -107,7 +107,7 @@ ___________________________________________________________ */
 
 bool ModelPlotter::isClickWithinModel(float xPos, float yPos)
 {		
-	for(int i = 0; i < App::getInstance()->getModelsSize(); i++)
+	for(int i = 0; i < App::getInstance()->getPageModelsSize(); i++)
 	{
 		Page * model = App::getInstance()->getModelByIndex(i);
 		
@@ -135,7 +135,7 @@ void ModelPlotter::deleteSelectedModel()
 {
 	if(_selectedModel != DISABLED)
 	{
-		App::getInstance()->removeModel(_selectedModel);
+		App::getInstance()->removePageModel(_selectedModel);
 		
 		_selectedModel = DISABLED;
 		_selectedPoint = DISABLED;
@@ -158,7 +158,7 @@ void ModelPlotter::keyPressed(int key)
 		
 		if (!_recordMode) 
 		{
-			App::getInstance()->flagModelsChanged();
+			App::getInstance()->flagPageModelsChanged();
 		}
 	}
 	else if(key == 'L')
@@ -264,9 +264,9 @@ void ModelPlotter::loadModels()
 	
 	if(_xml.loadFile(XML_FILE))
 	{
-		for(int i = 0; i< app->getModelsSize(); i++)
+		for(int i = 0; i< app->getPageModelsSize(); i++)
 		{
-			app->removeModel(i);
+			app->removePageModel(i);
 		}
 		
 		//app->models.clear();
@@ -302,7 +302,7 @@ void ModelPlotter::loadModels()
 		}
 	}
 	
-	app->flagModelsChanged();
+	app->flagPageModelsChanged();
 	
 	cout << ":::::::::::: Models were loaded ::::::::::::" << endl;
 }
@@ -316,7 +316,7 @@ void ModelPlotter::saveModels()
 	_xml.addTag(PAGES);
 	_xml.pushTag(PAGES, 0);
 	
-	for(int i = 0; i < app->getModelsSize(); i++)
+	for(int i = 0; i < app->getPageModelsSize(); i++)
 	{
 		_xml.addTag(PAGE);
 		_xml.pushTag(PAGE, i);

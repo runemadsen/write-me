@@ -49,7 +49,7 @@ void DrawingController::resetTexture()
 	ofRect(0, 0, _mask.getWidth(), _mask.getHeight());
 	
 	ofSetColor(255, 0, 0);
-	for (int i = 0; i < app->getModelsSize(); i++) 
+	for (int i = 0; i < app->getPageModelsSize(); i++) 
 	{
 		Page * model = app->getModelByIndex(i);
 		
@@ -129,7 +129,6 @@ void DrawingController::drawTexture()
 	
 	ofRectangle r = App::getInstance()->getModelBounds();
 	
-	
 	ofEnableAlphaBlending();
 	
 	ofSetColor(255, 255, 255, _fader.num);
@@ -148,7 +147,7 @@ void DrawingController::drawSaveImage()
 {
 	App * app = App::getInstance();
 	
-	int s = app->getModelsSize();
+	int s = app->getPageModelsSize();
 	
 	if(s > 0)
 	{

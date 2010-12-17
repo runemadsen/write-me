@@ -12,27 +12,30 @@ public:
 	
 	static App * getInstance();
 	
-	void addModel(Page * model);
-	
+	// page models
 	ofRectangle getModelBounds() { return _modelBounds; }
+	void addModel(Page * model);
+	bool pageModelsChanged();
+	void flagPageModelsChanged();
+	Page * getModelByID(int id);
+	Page * getModelByIndex(int index);
+	int getPageModelsSize() { return _pageModels.size(); }
 	
-	bool modelsChanged();
+	// drawing models
+	void addModel(Drawing * model);
 	
 	int nextImage() { _imageCount++; return _imageCount; }
 	void setImageCount(int i) { _imageCount = i; }
 	void resetImageCount() { _imageCount = 0; }
 	
-	void flagModelsChanged();
+	void removePageModel(int index);
 	
-	Page * getModelByID(int id);
-	Page * getModelByIndex(int index);
-	int getModelsSize() { return _models.size(); }
-	
-	void removeModel(int index);
+	void loadModels();
 	
 private:
 	
-	vector <Page *> _models;
+	vector <Drawing *> _drawingModels;
+	vector <Page *> _pageModels;
 	ofRectangle _modelBounds;
 	
 	int _imageCount;
@@ -43,5 +46,5 @@ private:
 	App& operator=(App const&){};
 	static App* m_pInstance;
 	
-	bool _modelsChanged;
+	bool _pageModelsChanged;
 };

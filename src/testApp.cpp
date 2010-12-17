@@ -7,6 +7,8 @@ void testApp::setup()
 {
 	curAnimation = 0;
 	
+	App::getInstance()->loadModels();
+	
 	ofEnableSmoothing();
 	
 	ofSetWindowTitle("Dear...");

@@ -18,7 +18,7 @@ App * App::getInstance()
 
 App::App()
 {
-	_modelsChanged = false;
+	_pageModelsChanged = false;
 	
 	//_modelBounds.x = 600;
 	_modelBounds.x = (ofGetWidth() / 2) - (DRAWING_TEXTURE_SIZE / 2);
@@ -32,7 +32,7 @@ App::App()
 /* Flag models changed
  ___________________________________________________________ */
 
-void App::flagModelsChanged() 
+void App::flagPageModelsChanged() 
 { 
 	// update boundingrect
 	int xLeft = ofGetWidth();
@@ -40,15 +40,15 @@ void App::flagModelsChanged()
 	int yTop = ofGetHeight();
 	int yBot = 0;	
 	
-	for (int j = 0; j < _models.size(); j++) 
+	for (int j = 0; j < _pageModels.size(); j++) 
 	{
-		for (int i = 0; i < _models[j]->pts.size(); i++) 
+		for (int i = 0; i < _pageModels[j]->pts.size(); i++) 
 		{
-			if(_models[j]->pts[i].x < xLeft)		xLeft = _models[j]->pts[i].x;
-			else if(_models[j]->pts[i].x > xRight)	xRight = _models[j]->pts[i].x;
+			if(_pageModels[j]->pts[i].x < xLeft)		xLeft = _pageModels[j]->pts[i].x;
+			else if(_pageModels[j]->pts[i].x > xRight)	xRight = _pageModels[j]->pts[i].x;
 			
-			if(_models[j]->pts[i].y < yTop)			yTop = _models[j]->pts[i].y;
-			else if(_models[j]->pts[i].y > yBot)	yBot = _models[j]->pts[i].y;
+			if(_pageModels[j]->pts[i].y < yTop)			yTop = _pageModels[j]->pts[i].y;
+			else if(_pageModels[j]->pts[i].y > yBot)	yBot = _pageModels[j]->pts[i].y;
 			
 		}
 	}
@@ -58,17 +58,25 @@ void App::flagModelsChanged()
 	_modelBounds.width = xRight - xLeft;
 	_modelBounds.height = yBot - yTop;
 	
-	_modelsChanged = true; 
+	_pageModelsChanged = true; 
+}
+
+/* Load Models
+ ___________________________________________________________ */
+
+void App::loadModels()
+{
+	
 }
 
 /* Getters
  ___________________________________________________________ */
 
-bool App::modelsChanged()
+bool App::pageModelsChanged()
 {
-	if(_modelsChanged)
+	if(_pageModelsChanged)
 	{
-		_modelsChanged = false;
+		_pageModelsChanged = false;
 		
 		return true;
 	}
@@ -78,16 +86,16 @@ bool App::modelsChanged()
 
 Page * App::getModelByIndex(int index)
 {
-	return _models[index];
+	return _pageModels[index];
 }
 
 Page * App::getModelByID(int id)
 {
-	for (int i = 0; i < _models.size(); i++) 
+	for (int i = 0; i < _pageModels.size(); i++) 
 	{
-		if(id == _models[i]->id)
+		if(id == _pageModels[i]->id)
 		{
-			return _models[i];
+			return _pageModels[i];
 		}
 	}
 	
@@ -99,11 +107,11 @@ Page * App::getModelByID(int id)
 
 void App::addModel(Page * model)
 {
-	_models.push_back(model);
+	_pageModels.push_back(model);
 }
 
-void App::removeModel(int index)
+void App::removePageModel(int index)
 {
-	delete _models[index];
-	_models.erase(_models.begin() + index);
+	delete _pageModels[index];
+	_pageModels.erase(_pageModels.begin() + index);
 }

@@ -13,7 +13,7 @@ PagesController::PagesController()
 
 void PagesController::update()
 {	
-	if(App::getInstance()->modelsChanged()) 
+	if(App::getInstance()->pageModelsChanged()) 
 	{
 		createNewViews();
 	}
@@ -64,7 +64,7 @@ void PagesController::createNewViews()
 	_views.clear();
 	
 	// loop through models and create views
-	for (int i = 0; i < app->getModelsSize(); i++) 
+	for (int i = 0; i < app->getPageModelsSize(); i++) 
 	{		
 		PageAnimation * view = new PageAnimationDrawing();
 		view->setPageModel(app->getModelByIndex(i));
