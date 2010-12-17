@@ -51,7 +51,7 @@ void DrawingController::resetTexture()
 	ofSetColor(255, 0, 0);
 	for (int i = 0; i < app->getPageModelsSize(); i++) 
 	{
-		Page * model = app->getModelByIndex(i);
+		Page * model = app->getPageModelByIndex(i);
 		
 		ofBeginShape();
 		
@@ -151,7 +151,7 @@ void DrawingController::drawSaveImage()
 	
 	if(s > 0)
 	{
-		Page * lastModel = app->getModelByIndex(s - 1);
+		Page * lastModel = app->getPageModelByIndex(s - 1);
 		
 		float saveCoords[8] = {0, 0, _saveImg.width, 0, _saveImg.width, _saveImg.height, 0, _saveImg.height};
 		

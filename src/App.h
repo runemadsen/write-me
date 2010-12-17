@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Page.h"
+#include "Drawing.h"
 #include "Constants.h"
 #include "ofxDirList.h"
 
@@ -14,23 +15,19 @@ public:
 	
 	// page models
 	ofRectangle getModelBounds() { return _modelBounds; }
-	void addModel(Page * model);
+	void addPageModel(Page * model);
+	Page * getPageModelByID(int id);
+	Page * getPageModelByIndex(int index);
+	int getPageModelsSize() { return _pageModels.size(); }
 	bool pageModelsChanged();
 	void flagPageModelsChanged();
-	Page * getModelByID(int id);
-	Page * getModelByIndex(int index);
-	int getPageModelsSize() { return _pageModels.size(); }
-	
-	// drawing models
-	void addModel(Drawing * model);
-	
-	int nextImage() { _imageCount++; return _imageCount; }
-	void setImageCount(int i) { _imageCount = i; }
-	void resetImageCount() { _imageCount = 0; }
-	
 	void removePageModel(int index);
 	
-	void loadModels();
+	// drawing models
+	void addDrawingModel(Drawing * model);
+	Drawing * getDrawingModelByIndex(int index);
+	
+	void loadDrawingModels();
 	
 private:
 	

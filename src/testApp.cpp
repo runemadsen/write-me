@@ -7,7 +7,7 @@ void testApp::setup()
 {
 	curAnimation = 0;
 	
-	App::getInstance()->loadModels();
+	App::getInstance()->loadDrawingModels();
 	
 	ofEnableSmoothing();
 	

@@ -42,11 +42,11 @@ void ModelPlotter::draw()
 			
 			if(i == _selectedModel)	
 			{
-				drawModel(App::getInstance()->getModelByIndex(i), 0x000FF00);
+				drawModel(App::getInstance()->getPageModelByIndex(i), 0x000FF00);
 			}
 			else
 			{
-				drawModel(App::getInstance()->getModelByIndex(i), 0xFF0000);
+				drawModel(App::getInstance()->getPageModelByIndex(i), 0xFF0000);
 			}
 		}	
 	}
@@ -81,7 +81,7 @@ void ModelPlotter::mousePressed(int xPos, int yPos, int button)
 				Page * model = new Page();
 				model->addDefaultPoints(xPos, yPos);
 				model->id = _idCounter;
-				app->addModel(model);
+				app->addPageModel(model);
 				
 				_idCounter++;
 			}
@@ -97,8 +97,8 @@ void ModelPlotter::mouseDragged(int xPos, int yPos, int button)
 {
 	if(_recordMode && _selectedModel != DISABLED && _selectedPoint != DISABLED)
 	{
-		App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].x = xPos;
-		App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].y = yPos;
+		App::getInstance()->getPageModelByIndex(_selectedModel)->pts[_selectedPoint].x = xPos;
+		App::getInstance()->getPageModelByIndex(_selectedModel)->pts[_selectedPoint].y = yPos;
 	}
 }
 
@@ -109,7 +109,7 @@ bool ModelPlotter::isClickWithinModel(float xPos, float yPos)
 {		
 	for(int i = 0; i < App::getInstance()->getPageModelsSize(); i++)
 	{
-		Page * model = App::getInstance()->getModelByIndex(i);
+		Page * model = App::getInstance()->getPageModelByIndex(i);
 		
 		if(model == NULL)
 		{
@@ -182,7 +182,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].x += 1;
+				App::getInstance()->getPageModelByIndex(_selectedModel)->pts[_selectedPoint].x += 1;
 			}
 		}
 		// left arrow
@@ -190,7 +190,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].x -= 1;
+				App::getInstance()->getPageModelByIndex(_selectedModel)->pts[_selectedPoint].x -= 1;
 			}
 		}
 		// up arrow
@@ -198,7 +198,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].y -= 1;
+				App::getInstance()->getPageModelByIndex(_selectedModel)->pts[_selectedPoint].y -= 1;
 			}
 		}
 		// down arrow
@@ -206,7 +206,7 @@ void ModelPlotter::keyPressed(int key)
 		{
 			if(_selectedModel != DISABLED && _selectedPoint != DISABLED)
 			{
-				App::getInstance()->getModelByIndex(_selectedModel)->pts[_selectedPoint].y += 1;
+				App::getInstance()->getPageModelByIndex(_selectedModel)->pts[_selectedPoint].y += 1;
 			}
 		}
 		// d
@@ -246,12 +246,12 @@ void ModelPlotter::keyPressed(int key)
 
 void ModelPlotter::moveModel(bool moveX, float moveNum)
 {
-	for(int i = 0; i < App::getInstance()->getModelByIndex(_selectedModel)->pts.size(); i++)
+	for(int i = 0; i < App::getInstance()->getPageModelByIndex(_selectedModel)->pts.size(); i++)
 	{
 		if(moveX)
-			App::getInstance()->getModelByIndex(_selectedModel)->pts[i].x += moveNum;
+			App::getInstance()->getPageModelByIndex(_selectedModel)->pts[i].x += moveNum;
 		else 
-			App::getInstance()->getModelByIndex(_selectedModel)->pts[i].y += moveNum;
+			App::getInstance()->getPageModelByIndex(_selectedModel)->pts[i].y += moveNum;
 	}
 }
 
@@ -293,7 +293,7 @@ void ModelPlotter::loadModels()
 				
 				_xml.popTag();
 				
-				app->addModel(page);
+				app->addPageModel(page);
 				
 				_idCounter++;
 			}
@@ -321,11 +321,11 @@ void ModelPlotter::saveModels()
 		_xml.addTag(PAGE);
 		_xml.pushTag(PAGE, i);
 		
-		for (int j = 0; j < app->getModelByIndex(i)->pts.size(); j++) 
+		for (int j = 0; j < app->getPageModelByIndex(i)->pts.size(); j++) 
 		{
 			_xml.addTag(POINT);
-			_xml.addAttribute(POINT, "x", ofToString(app->getModelByIndex(i)->pts[j].x, 1), j);
-			_xml.addAttribute(POINT, "y", ofToString(app->getModelByIndex(i)->pts[j].y, 1), j);
+			_xml.addAttribute(POINT, "x", ofToString(app->getPageModelByIndex(i)->pts[j].x, 1), j);
+			_xml.addAttribute(POINT, "y", ofToString(app->getPageModelByIndex(i)->pts[j].y, 1), j);
 		}
 		
 		_xml.popTag();

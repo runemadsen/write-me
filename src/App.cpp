@@ -64,12 +64,25 @@ void App::flagPageModelsChanged()
 /* Load Models
  ___________________________________________________________ */
 
-void App::loadModels()
+void App::loadDrawingModels()
 {
 	
 }
 
-/* Getters
+/* Drawing Models
+ ___________________________________________________________ */
+
+void App::addDrawingModel(Drawing * model)
+{
+	_drawingModels.push_back(model);
+}
+
+Drawing * App::getDrawingModelByIndex(int index)
+{
+	return _drawingModels[index];
+}
+
+/* Page Models
  ___________________________________________________________ */
 
 bool App::pageModelsChanged()
@@ -84,12 +97,12 @@ bool App::pageModelsChanged()
 	return false;
 }
 
-Page * App::getModelByIndex(int index)
+Page * App::getPageModelByIndex(int index)
 {
 	return _pageModels[index];
 }
 
-Page * App::getModelByID(int id)
+Page * App::getPageModelByID(int id)
 {
 	for (int i = 0; i < _pageModels.size(); i++) 
 	{
@@ -102,10 +115,7 @@ Page * App::getModelByID(int id)
 	return NULL;
 }
 
-/* Setters
- ___________________________________________________________ */
-
-void App::addModel(Page * model)
+void App::addPageModel(Page * model)
 {
 	_pageModels.push_back(model);
 }
