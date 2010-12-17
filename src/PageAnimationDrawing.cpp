@@ -59,9 +59,9 @@ void PageAnimationDrawing::update()
 {	
 	_tweenDown.update();
 	
-	if(_drawingModel.isPlaying())
+	if(_drawingModel->isPlaying())
 	{
-		Dot * d = _drawingModel.getDot();
+		Dot * d = _drawingModel->getDot();
 		
 		if(d != NULL)
 		{			
@@ -77,7 +77,7 @@ void PageAnimationDrawing::update()
 			_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
 		}
 		
-		if (_drawingModel.isMouseUp()) 
+		if (_drawingModel->isMouseUp()) 
 		{
 			cout << "Mouse up" << endl;
 			
@@ -85,12 +85,12 @@ void PageAnimationDrawing::update()
 		}
 	}
 	
-	if(_drawing && !_drawingModel.isFinished())
+	if(_drawing && !_drawingModel->isFinished())
 	{
 		drawSinceLast();
 	}
 	
-	if(_drawingModel.isFinished())
+	if(_drawingModel->isFinished())
 	{
 		if(!_tweenDown.isPlaying())
 		{
@@ -203,9 +203,9 @@ void PageAnimationDrawing::show()
 	
 	resetBackground();
 	
-	_drawingModel.play();
+	_drawingModel->play();
 	
-	Dot * d = _drawingModel.getDotAtIndex(0);
+	Dot * d = _drawingModel->getDotAtIndex(0);
 	
 	_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
 	_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());

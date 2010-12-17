@@ -66,7 +66,58 @@ void App::flagPageModelsChanged()
 
 void App::loadDrawingModels()
 {
+	ofxDirList DIR;
+	DIR.allowExt("xml");
 	
+	int numFiles = DIR.listDir(DRAWING_FOLDER);
+	
+	for (int i = 0; i < numFiles; i++) 
+	{
+		createDrawingModelFromXML(DIR.getName(i));
+	}
+}
+
+void App::createDrawingModelFromXML(string fileName)
+{
+	ofxXmlSettings xml;
+	Drawing * drawing = new Drawing();
+	
+	if(xml.loadFile(DRAWING_FOLDER + fileName))
+	{
+		if(xml.pushTag(DRAWING, 0))
+		{
+			// points
+			if(xml.pushTag(POINTS, 0))
+			{
+				for (int i = 0; i < xml.getNumTags(POINT); i++) 
+				{
+					Dot d;
+					d.x = (float) xml.getAttribute(POINT, X, 0.0, i);
+					d.y = (float) xml.getAttribute(POINT, Y, 0.0, i);
+					d.ms = (long) xml.getAttribute(POINT, MS, 0, i);
+					
+					drawing->addDot(d);
+				}
+				
+				xml.popTag();
+			}
+			
+			// mouse ups
+			if(xml.pushTag(MOUSE_UPS, 0))
+			{
+				for (int i = 0; i < xml.getNumTags(MOUSE_UP); i++) 
+				{
+					drawing->addMouseUp( (long) xml.getAttribute(MOUSE_UP, MS, 0, i));
+				}
+				
+				xml.popTag();
+			}
+			
+			xml.popTag();
+		}
+	}
+	
+	addDrawingModel(drawing);
 }
 
 /* Drawing Models

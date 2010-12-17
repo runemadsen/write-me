@@ -5,11 +5,9 @@
 #include "Constants.h"
 #include "App.h"
 #include "PageAnimation.h"
-#include "ofxDirList.h"
 #include "Animation.h"
 #include "PageAnimationDrawing.h"
 #include "PageAnimationBlank.h"
-#include "ofxXmlSettings.h"
 
 class PagesController : public Animation
 {
@@ -27,7 +25,7 @@ public:
 	
 private:
 	
-	Drawing getRandomDrawingModel();
+	Drawing * getRandomDrawingModel();
 	
 	vector <PageAnimation *> _views;
 	

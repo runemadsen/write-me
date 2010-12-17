@@ -5,6 +5,7 @@
 #include "Drawing.h"
 #include "Constants.h"
 #include "ofxDirList.h"
+#include "ofxXmlSettings.h"
 
 class App  
 {
@@ -26,6 +27,7 @@ public:
 	// drawing models
 	void addDrawingModel(Drawing * model);
 	Drawing * getDrawingModelByIndex(int index);
+	int getDrawingModelsSize() { return _drawingModels.size(); }
 	
 	void loadDrawingModels();
 	
@@ -34,6 +36,8 @@ private:
 	vector <Drawing *> _drawingModels;
 	vector <Page *> _pageModels;
 	ofRectangle _modelBounds;
+	
+	void createDrawingModelFromXML(string fileName);
 	
 	int _imageCount;
 	

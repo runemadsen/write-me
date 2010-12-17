@@ -77,55 +77,13 @@ void PagesController::createNewViews()
 /* Load random drawing model
  ___________________________________________________________ */
 
-Drawing PagesController::getRandomDrawingModel()
+Drawing * PagesController::getRandomDrawingModel()
 {
-	ofxDirList DIR;
-	DIR.allowExt("xml");
+	App * app = App::getInstance();
 	
-	int numFiles = DIR.listDir(DRAWING_FOLDER);
+	int ran = ofRandom(0, app->getDrawingModelsSize() - 1);
 	
-	vector <string> fileNames;
-	
-	int ranIndex = ofRandom(0, numFiles);
-	
-	Drawing drawing;
-	
-	if(_xml.loadFile(DRAWING_FOLDER + DIR.getName(ranIndex)))
-	{
-		if(_xml.pushTag(DRAWING, 0))
-		{
-			// points
-			if(_xml.pushTag(POINTS, 0))
-			{
-				for (int i = 0; i < _xml.getNumTags(POINT); i++) 
-				{
-					Dot d;
-					d.x = (float) _xml.getAttribute(POINT, X, 0.0, i);
-					d.y = (float) _xml.getAttribute(POINT, Y, 0.0, i);
-					d.ms = (long) _xml.getAttribute(POINT, MS, 0, i);
-					
-					drawing.addDot(d);
-				}
-				
-				_xml.popTag();
-			}
-			
-			// mouse ups
-			if(_xml.pushTag(MOUSE_UPS, 0))
-			{
-				for (int i = 0; i < _xml.getNumTags(MOUSE_UP); i++) 
-				{
-					drawing.addMouseUp( (long) _xml.getAttribute(MOUSE_UP, MS, 0, i));
-				}
-				
-				_xml.popTag();
-			}
-			
-			_xml.popTag();
-		}
-	}
-	
-	return drawing;
+	return App::getInstance()->getDrawingModelByIndex(ran);
 }
 
 /* Show / hide
