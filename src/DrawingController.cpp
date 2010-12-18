@@ -39,6 +39,18 @@ void DrawingController::resetTexture()
 	ofSetColor(255, 255, 255);
 	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
 	_tex.end();
+	
+	_texCoords[0] = 0;
+	_texCoords[1] = 0;
+	
+	_texCoords[2] = _tex.getWidth();
+	_texCoords[3] = 0;
+	
+	_texCoords[4] = _tex.getWidth();
+	_texCoords[5] = _tex.getHeight(); 
+	
+	_texCoords[6] = 0;
+	_texCoords[7] = _tex.getHeight();
 }
 
 /* Update
@@ -80,13 +92,23 @@ void DrawingController::drawTexture()
 	ofSetColor(255, 255, 255);
 	
 	ofRectangle r = App::getInstance()->getModelBounds();
+	Page * model = App::getInstance()->getPageModelByIndex(0);
 	
-	ofEnableAlphaBlending();
+	_tex.bind();
 	
-	ofSetColor(255, 255, 255, _fader.num);
-	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, 0, &_texCoords[0]);
+	ofQuad2D(model->pts[0].x, model->pts[0].y, model->pts[1].x, model->pts[1].y, model->pts[2].x, model->pts[2].y, model->pts[3].x, model->pts[3].y);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	ofDisableAlphaBlending();
+	_tex.unbind();
+	
+	//ofEnableAlphaBlending();
+//	
+//	ofSetColor(255, 255, 255, _fader.num);
+//	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
+//	
+//	ofDisableAlphaBlending();
 }
 
 /* Draw mouse
@@ -142,7 +164,7 @@ void DrawingController::drawPoint(float x, float y)
 	_tex.begin();
 	
 	ofPushMatrix();
-	ofTranslate(x, _tex.getHeight() - y);
+	ofTranslate(x, y);
 	ofRotateZ(ranRot);
 	
 	ofEnableAlphaBlending();

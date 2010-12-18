@@ -64,4 +64,6 @@ private:
 	TweenTimer _exitTimer;
 	
 	RecordingHelper _recorder;
+	
+	float _texCoords[8];
 };
