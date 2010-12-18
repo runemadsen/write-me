@@ -1,30 +1,25 @@
 #pragma once
 
+#include "ofMain.h"
+#include "Constants.h"
+#include "App.h"
+#include "Tween.h"
+#include "ofQuad.h"
 #include "Animation.h"
-#include "Drawing.h"
+#include "ofxFBOTexture.h"
+#include "PlayHelper.h"
 
-class PageAnimation : Animation
+class PageAnimation : public Animation
 {
 	
 public:
 	
-	PageAnimation() 
-	{
-		_finished = false;
-		
-		_pageModel = NULL;
-	}
+	PageAnimation();
 	
-	virtual void update() {}
-	virtual void draw() {}
-	virtual void show() { _finished = false; }
-	virtual void hide() { _finished = true; }
-	
-	virtual void keyPressed(int key) {}
-	virtual void mouseMoved(int x, int y) {}
-	virtual void mouseDragged(int x, int y, int button) {}
-	virtual void mousePressed(int x, int y, int button) {}
-	virtual void mouseReleased(int x, int y, int button) {}
+	void update();
+	void draw();
+	void show();
+	void hide();
 	
 	void setPageModel(Page * pageModel) { _pageModel = pageModel; }
 	void setDrawingModel(Drawing * drawingModel) { _drawingModel = drawingModel; }
@@ -32,15 +27,29 @@ public:
 	Page * getPageModel() { return _pageModel; }
 	Drawing * getDrawingModel() { return _drawingModel; }
 	
-	bool getFinished() { return _finished; }
+	bool getFinished() { return _finished; }	
 	
-protected:
+private:
+	
+	void setupTexture();
+	void drawPoint(float x, float y);
+	void drawSinceLast();
+	
+	void resetBackground();
+	
+	Tween _tweenDown;
+	
+	ofxFBOTexture _tex;
+	float _texCoords[8];
+	
+	ofxVec2f _lastPos;
+	ofxVec2f _curPos;
+	bool _drawing;
+	
+	PlayHelper _player;
 	
 	bool _finished;
 	
 	Page * _pageModel;
 	Drawing * _drawingModel;
-	
-private:
-	
 };

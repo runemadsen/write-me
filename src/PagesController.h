@@ -6,8 +6,6 @@
 #include "App.h"
 #include "PageAnimation.h"
 #include "Animation.h"
-#include "PageAnimationDrawing.h"
-#include "PageAnimationBlank.h"
 
 class PagesController : public Animation
 {

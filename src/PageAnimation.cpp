@@ -5,8 +5,56 @@
 
 PageAnimation::PageAnimation()
 {	
-	finished = false;
-	modelid = DISABLED;
+	_finished = false;
+	
+	_pageModel = NULL;
+	_drawingModel = NULL;
+	
+	_drawing = false;
+		
+	_tweenDown.setup(100, 0, 255, Easing::QuadEaseIn);
+	
+	setupTexture();
+}
+
+/* Setup texture
+ ___________________________________________________________ */
+
+void PageAnimation::setupTexture()
+{
+	int tempW = 200;
+	int tempH = 280;
+	
+	_tex.allocate(tempW, tempH, GL_RGB);
+	
+	resetBackground();
+	
+	_texCoords[0] = 0;
+	_texCoords[1] = 0;
+	
+	_texCoords[2] = tempW;
+	_texCoords[3] = 0;
+	
+	_texCoords[4] = tempW;
+	_texCoords[5] = tempH; 
+	
+	_texCoords[6] = 0;
+	_texCoords[7] = tempH;
+	
+}
+
+/* Reset background of texture
+ ___________________________________________________________ */
+
+void PageAnimation::resetBackground()
+{
+	cout << "Resetting background" << endl;
+	
+	_tex.begin();
+	ofFill();
+	ofSetColor(255, 255, 255);
+	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
+	_tex.end();
 }
 
 /* Update
@@ -14,11 +62,53 @@ PageAnimation::PageAnimation()
 
 void PageAnimation::update()
 {	
-	_tween.update();
+	_tweenDown.update();
 	
-	if(_tween.finished())
+	if(_drawingModel->isPlaying())
 	{
-		finished = true;
+		Dot * d = _drawingModel->getDot();
+		
+		if(d != NULL)
+		{			
+			if(!_drawing)
+			{
+				_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+				_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+				
+				_drawing = true;
+			}
+			
+			_lastPos.set(_curPos);
+			_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+		}
+		
+		if (_drawingModel->isMouseUp()) 
+		{
+			cout << "Mouse up" << endl;
+			
+			_drawing = false;
+		}
+	}
+	
+	if(_drawing && !_drawingModel->isFinished())
+	{
+		drawSinceLast();
+	}
+	
+	if(_drawingModel->isFinished())
+	{
+		if(!_tweenDown.isPlaying())
+		{
+			_tweenDown.play();
+		}
+		
+		if(_tweenDown.finished())
+		{
+			_tweenDown.stop();
+			_finished = true;
+			
+			cout << "Setting finished \n ";
+		}
 	}
 }
 
@@ -27,52 +117,112 @@ void PageAnimation::update()
 
 void PageAnimation::draw()
 {	
-	Page * model = App::getInstance()->getModel(modelid);
-	
 	ofFill();
 	ofSetColor(255, 255, 255);
 	
-	_img.getTextureReference().bind();
+	_tex.bind();
 	
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, &_texCoords[0]);
-	ofQuad2D(model->pts[0].x, model->pts[0].y, model->pts[1].x, model->pts[1].y, model->pts[2].x, model->pts[2].y, model->pts[3].x, model->pts[3].y);
+	ofQuad2D(_pageModel->pts[0].x, _pageModel->pts[0].y, _pageModel->pts[1].x, _pageModel->pts[1].y, _pageModel->pts[2].x, _pageModel->pts[2].y, _pageModel->pts[3].x, _pageModel->pts[3].y);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	_img.getTextureReference().unbind();
+	_tex.unbind();
+	
+	ofEnableAlphaBlending();
+	ofSetColor(255, 255, 255, _tweenDown.num);
+	
+	ofBeginShape();
+	for (int i = 0; i < _pageModel->pts.size(); i++) 
+	{
+		ofVertex(_pageModel->pts[i].x, _pageModel->pts[i].y);
+	}
+	ofEndShape();
+	ofDisableAlphaBlending();
 }
 
-/* Set new image
+/* Draw line from last pos to cur pos
  ___________________________________________________________ */
 
-void PageAnimation::setAndPlay(string img, int duration, int delay)
+void PageAnimation::drawSinceLast()
 {	
-	reset();
+	float len = _lastPos.distance(_curPos);
 	
-	_img.loadImage(img);
+	ofxVec2f vec = _curPos - _lastPos;
+	vec.normalize();
 	
-	_texCoords[0] = 0;
-	_texCoords[1] = 0;
+	// draw as many length on normalize * length
+	for (int i = 1; i <= len; i++) 
+	{
+		float xPos = _lastPos.x + (vec.x * (float) i);
+		float yPos = _lastPos.y + (vec.y * (float) i);
+		
+		drawPoint(xPos, yPos);
+	}
 	
-	_texCoords[2] = _img.getWidth();
-	_texCoords[3] = 0;
+	//cout << "Drawing a point" << endl;
 	
-	_texCoords[4] = _img.getWidth();
-	_texCoords[5] = _img.getHeight(); 
-	
-	_texCoords[6] = 0;
-	_texCoords[7] = _img.getHeight();
-	
-	_tween.setup(duration, 0, duration, Easing::LinearEaseIn, delay);
-	
-	_tween.play();
+	drawPoint(_curPos.x, _curPos.y);
 }
 
-/* Reset
+/* Draw a single dot
  ___________________________________________________________ */
 
-void PageAnimation::reset()
-{
-	finished = false;
-	_tween.stop();
+void PageAnimation::drawPoint(float x, float y)
+{	
+	// draw last point also
+	float ranWidth = ofRandom(2, 7);
+	float ranHeight = ofRandom(1, 3);
+	float ranAlpha = ofRandom(50, 100); 
+	float ranRot = ofRandom(-30, 30);
+	
+	_tex.begin();
+	
+	ofPushMatrix();
+	ofTranslate(x, y);
+	ofRotateZ(ranRot);
+	
+	ofEnableAlphaBlending();
+	
+	ofSetColor(0, 0, 0, ranAlpha);
+	ofFill();
+	ofEllipse(0, 0, ranWidth, ranHeight);
+	ofNoFill();
+	ofEllipse(0, 0, ranWidth, ranHeight);
+	
+	ofDisableAlphaBlending();
+	ofPopMatrix();
+	
+	_tex.end();
 }
+
+
+/* Show
+ ___________________________________________________________ */
+
+void PageAnimation::show()
+{	
+	cout << "Show" << endl;
+	
+	_finished = false;
+	
+	resetBackground();
+	
+	_drawingModel->play();
+	
+	Dot * d = _drawingModel->getDotAtIndex(0);
+	
+	_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+	_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
+	
+	_drawing = true;
+}
+
+void PageAnimation::hide()
+{
+	cout << "Hide" << endl;
+	
+	_tweenDown.play();
+}
+
+

@@ -66,7 +66,7 @@ void PagesController::createNewViews()
 	// loop through models and create views
 	for (int i = 0; i < app->getPageModelsSize(); i++) 
 	{		
-		PageAnimation * view = new PageAnimationDrawing();
+		PageAnimation * view = new PageAnimation();
 		view->setPageModel(app->getPageModelByIndex(i));
 		view->setDrawingModel(getRandomDrawingModel());
 		view->show();
