@@ -48,9 +48,12 @@ void RecordingHelper::stopRecording()
 {
 	if(ENABLE_SAVE)
 	{
-		saveModel();
-		
-		App::getInstance()->addDrawingModel(_model);
+		if (_model->dots.size() > 0) 
+		{
+			saveModel();
+			
+			App::getInstance()->addDrawingModel(_model);
+		}
 	}
 	
 	_recording = false;

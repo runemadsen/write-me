@@ -119,7 +119,14 @@ void App::createDrawingModelFromXML(string fileName)
 		}
 	}
 	
-	addDrawingModel(drawing);
+	if (drawing->dots.size() > 0) 
+	{
+		addDrawingModel(drawing);
+	}
+	else 
+	{
+		delete drawing;
+	}
 }
 
 /* Drawing Models

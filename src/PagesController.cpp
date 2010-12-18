@@ -81,7 +81,16 @@ Drawing * PagesController::getRandomDrawingModel()
 {
 	App * app = App::getInstance();
 	
-	int ran = ofRandom(0, app->getDrawingModelsSize() - 1);
+	int ran = ofRandom(0, app->getDrawingModelsSize());
+	
+	if (ran == app->getDrawingModelsSize()) 
+	{
+		ran = app->getDrawingModelsSize();
+		
+		cout << "Random selected full size of drawing models despite floor()" << endl;
+	}
+	
+	cout << "Size: " << app->getDrawingModelsSize() << " Random: " << ran << endl;
 	
 	return App::getInstance()->getDrawingModelByIndex(ran);
 }

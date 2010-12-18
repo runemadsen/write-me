@@ -84,8 +84,6 @@ void PageAnimation::update()
 		
 		if (_player.isMouseUp()) 
 		{
-			cout << "Mouse up" << endl;
-			
 			_drawing = false;
 		}
 	}
@@ -106,8 +104,6 @@ void PageAnimation::update()
 		{
 			_tweenDown.stop();
 			_finished = true;
-			
-			cout << "Setting finished \n ";
 		}
 	}
 }
@@ -201,9 +197,7 @@ void PageAnimation::drawPoint(float x, float y)
  ___________________________________________________________ */
 
 void PageAnimation::show()
-{	
-	cout << "Show" << endl;
-	
+{		
 	_finished = false;
 	
 	resetBackground();
@@ -219,9 +213,7 @@ void PageAnimation::show()
 }
 
 void PageAnimation::hide()
-{
-	cout << "Hide" << endl;
-	
+{	
 	_tweenDown.play();
 }
 
