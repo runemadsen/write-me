@@ -21,8 +21,8 @@ public:
 	void show();
 	void hide();
 	
-	void setPageModel(Page * pageModel) { _pageModel = pageModel; }
-	void setDrawingModel(Drawing * drawingModel) { _drawingModel = drawingModel; }
+	void setPageModel(Page * pageModel);
+	void setDrawingModel(Drawing * drawingModel);
 	
 	Page * getPageModel() { return _pageModel; }
 	Drawing * getDrawingModel() { return _drawingModel; }

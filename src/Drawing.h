@@ -17,17 +17,9 @@ public:
 	void addNormDot(float x, float y);
 	void addMouseUp();
 	
-	Dot * getDot();
-	
-	bool isMouseUp();
-	
 	void record();
 	void stopRecording();
-	void play();
-	bool isPlaying();
-	
-	bool isFinished();
-	
+		
 	int getMouseUpsSize() { return _mouseUps.size(); }
 	int getSize() { return _pts.size(); }
 	Dot * getDotAtIndex(int i) { return &_pts[i]; }
@@ -41,14 +33,7 @@ private:
 	vector <long> _mouseUps;
 	
 	long _drawms;
-	long _playms;
-	
-	bool _finished;
-	bool _playing;
-	
-	int _curDot;
-	int _curMouseUp;
-	
+
 	bool _recording;
 	
 };
