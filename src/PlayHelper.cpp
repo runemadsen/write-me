@@ -29,11 +29,11 @@ Dot * PlayHelper::isDot()
 	
 	long curms = ofGetElapsedTimeMillis() - _playms;
 	
-	for (int i = _curDot + 1; i < _model->getSize(); i++) 
+	for (int i = _curDot + 1; i < _model->dots.size(); i++) 
 	{
-		if(curms >= _model->getDotAtIndex(i)->ms)
+		if(curms >= _model->dots[i]->ms)
 		{
-			curDot = _model->getDotAtIndex(i);
+			curDot = _model->dots[i];
 			_curDot = i;
 		}
 		else 
@@ -42,7 +42,7 @@ Dot * PlayHelper::isDot()
 		}
 	}
 	
-	if(_curDot == _model->getSize() - 1)
+	if(_curDot == _model->dots.size() - 1)
 	{
 		_finished = true;
 	}
@@ -54,9 +54,9 @@ bool PlayHelper::isMouseUp()
 	
 	bool returnVal = false;
 	
-	for (int i = _curMouseUp + 1; i < _model->getMouseUpsSize(); i++) 
+	for (int i = _curMouseUp + 1; i < _model->mouseUps.size(); i++) 
 	{		
-		if(curms >= _model->getMouseUpAtIndex(i))
+		if(curms >= _model->mouseUps[i])
 		{
 			returnVal = true;
 			_curMouseUp = i;

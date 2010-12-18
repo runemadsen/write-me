@@ -210,7 +210,7 @@ void PageAnimation::show()
 	
 	_player.play();
 	
-	Dot * d = _drawingModel->getDotAtIndex(0);
+	Dot * d = _drawingModel->dots[0];
 	
 	_curPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());
 	_lastPos.set(d->x * _tex.getWidth(), d->y * _tex.getHeight());

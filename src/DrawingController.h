@@ -8,9 +8,9 @@
 #include "ofxVec2f.h"
 #include "ofxImage.h"
 #include "Drawing.h"
-#include "ofxXmlSettings.h"
 #include "ofQuad.h"
 #include "Tween.h"
+#include "RecordingHelper.h"
 
 class DrawingController : public Animation
 {
@@ -47,28 +47,21 @@ private:
 	
 	void drawTexture();
 	void drawMouse();
-	void saveDrawing();
 	
 	ofPoint getMousePosInTexture(int x, int y);
 	
 	ofxFBOTexture _tex;
-	ofxFBOTexture _mask;
-	ofTexture _finalMask;
 	
 	bool _drawing;
 	
 	ofxVec2f _lastPos;
 	ofxVec2f _curPos;
 	
-	Drawing * _d;
-	
-	ofxXmlSettings _xml;
-	
-	ofImage _saveImg;
-	
 	ofPoint _mousePos;
 	
 	Tween _fader;
 	
 	TweenTimer _exitTimer;
+	
+	RecordingHelper _recorder;
 };

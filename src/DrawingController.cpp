@@ -7,13 +7,9 @@ DrawingController::DrawingController()
 {		
 	allocateTextures();
 	
-	_d = new Drawing();
-	
 	_drawing = false;
 	
 	_firstPress = true;
-	
-	_saveImg.loadImage("clicktosave.png");
 	
 	_fader.setup(50, 100, 255, Easing::QuartEaseIn, 0, 2);
 }
@@ -29,7 +25,6 @@ void DrawingController::allocateTextures()
 	cout << "Drawing Texture at: " << r.x << " , " << r.y << endl;
 		
 	_tex.allocate(r.width, r.height, GL_RGB);
-	_mask.allocate(r.width, r.height, GL_RGBA);
 	
 	resetTexture();
 }
@@ -44,49 +39,6 @@ void DrawingController::resetTexture()
 	ofSetColor(255, 255, 255);
 	ofRect(0, 0, _tex.getWidth(), _tex.getHeight());
 	_tex.end();
-	
-	_mask.begin();
-	ofFill();
-	ofSetColor(0, 0, 0);
-	ofRect(0, 0, _mask.getWidth(), _mask.getHeight());
-	
-	ofSetColor(255, 0, 0);
-	for (int i = 0; i < app->getPageModelsSize(); i++) 
-	{
-		Page * model = app->getPageModelByIndex(i);
-		
-		ofBeginShape();
-		
-		for (int j = 0; j < model->pts.size(); j++) 
-		{
-			ofVertex(model->pts[j].x - r.x, model->pts[j].y - r.y);
-		}
-		
-		ofEndShape(true);
-	}
-	
-	_mask.end();
-	
-	unsigned char * pix = (unsigned char *) _mask.getPixels();
-	
-	for(int i = 0; i < _mask.getWidth() * _mask.getHeight(); i++)
-	{
-		if(pix[i * 4] == 255)
-		{
-			pix[i * 4 + 3] = 0; 	// alpha
-		}
-		else 
-		{
-			pix[i * 4 + 3] = 255; 	// alpha
-		}
-
-		pix[i * 4] = 0;	// r
-		pix[i * 4 + 1] = 0;	// g
-		pix[i * 4 + 2] = 0;   // b
-	}
-	
-	_finalMask.allocate(_mask.getWidth(), _mask.getHeight(), GL_RGBA);
-	_finalMask.loadData(pix, _mask.getWidth(), _mask.getHeight(), GL_RGBA);
 }
 
 /* Update
@@ -134,9 +86,6 @@ void DrawingController::drawTexture()
 	ofSetColor(255, 255, 255, _fader.num);
 	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
 	
-	ofSetColor(0, 0, 0, 255);
-	_finalMask.draw(r.x, r.y, _mask.getWidth(), _mask.getHeight());
-	
 	ofDisableAlphaBlending();
 }
 
@@ -175,7 +124,7 @@ void DrawingController::drawSinceLast()
 		
 		drawPoint(_curPos.x, _curPos.y);
 			
-		_d->addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
+		_recorder.addNormDot(_curPos.x / (float) _tex.getWidth(), _curPos.y / (float) _tex.getHeight());
 	}	
 }
 
@@ -210,58 +159,6 @@ void DrawingController::drawPoint(float x, float y)
 	_tex.end();
 }
 
-/* Save drawing
- ___________________________________________________________ */
-
-void DrawingController::saveDrawing()
-{	
-	_xml.loadFromBuffer("<root></root>");
-	
-	_xml.clear();
-	
-	_xml.addTag(DRAWING);
-	_xml.pushTag(DRAWING, 0);
-	
-	_xml.addTag(POINTS);
-	_xml.pushTag(POINTS, 0);
-	
-	for(int i = 0; i < _d->getSize(); i++)
-	{
-		_xml.addTag(POINT);
-		_xml.addAttribute(POINT, X, ofToString(_d->getDotAtIndex(i)->x, 2), i);
-		_xml.addAttribute(POINT, Y, ofToString(_d->getDotAtIndex(i)->y, 2), i);
-		_xml.addAttribute(POINT, MS, ofToString(_d->getDotAtIndex(i)->ms, 0), i);
-	}
-	
-	_xml.popTag();
-	
-	_xml.addTag(MOUSE_UPS);
-	_xml.pushTag(MOUSE_UPS, 0);
-	
-	for(int i = 0; i < _d->getMouseUpsSize(); i++)
-	{
-		_xml.addTag(MOUSE_UP);
-		_xml.addAttribute(MOUSE_UP, MS, ofToString(_d->getMouseUpAtIndex(i), 0), i);
-	}
-	
-	_xml.popTag();
-	
-	string file = ofToString(ofGetYear());
-	file += "-";
-	file += ofToString(ofGetMonth());
-	file += "-";
-	file += ofToString(ofGetDay());
-	file += "-";
-	file += ofToString(ofGetHours());
-	file += "-";
-	file += ofToString(ofGetMinutes());
-	file += "-";
-	file += ofToString(ofGetSeconds());
-	
-	_xml.saveFile(DRAWING_FOLDER + file + ".xml");
-}
-
-
 /* Events
  ___________________________________________________________ */
 
@@ -291,7 +188,7 @@ void DrawingController::mousePressed(int x, int y, int button)
 {
 	if (_firstPress) 
 	{
-		_d->record();
+		_recorder.record();
 		
 		_firstPress = false;
 	}
@@ -309,20 +206,14 @@ void DrawingController::mouseReleased(int x, int y, int button)
 {
 	_drawing = false;
 	
-	// make sure we don't get mouseups after finished?
-	_d->addMouseUp();
+	_recorder.addMouseUp();
 }
 
 void DrawingController::keyPressed(int key)
 {
 	if(key == 'c')
 	{
-		if(ENABLE_SAVE)
-		{
-			saveDrawing();
-			
-			App::getInstance()->addDrawingModel(_d);
-		}
+		_recorder.stopRecording();
 		
 		reset();
 		
@@ -356,9 +247,6 @@ void DrawingController::reset()
 	
 	_firstPress = true;
 	_fader.stop();
-	
-	_d->stopRecording();
-	_d = new Drawing();
 }
 
 /* Show / Hide

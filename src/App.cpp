@@ -93,12 +93,12 @@ void App::createDrawingModelFromXML(string fileName)
 			{
 				for (int i = 0; i < xml.getNumTags(POINT); i++) 
 				{
-					Dot d;
-					d.x = (float) xml.getAttribute(POINT, X, 0.0, i);
-					d.y = (float) xml.getAttribute(POINT, Y, 0.0, i);
-					d.ms = (long) xml.getAttribute(POINT, MS, 0, i);
+					Dot * d = new Dot();
+					d->x = (float) xml.getAttribute(POINT, X, 0.0, i);
+					d->y = (float) xml.getAttribute(POINT, Y, 0.0, i);
+					d->ms = (long) xml.getAttribute(POINT, MS, 0, i);
 					
-					drawing->addDot(d);
+					drawing->dots.push_back(d);
 				}
 				
 				xml.popTag();
@@ -109,7 +109,7 @@ void App::createDrawingModelFromXML(string fileName)
 			{
 				for (int i = 0; i < xml.getNumTags(MOUSE_UP); i++) 
 				{
-					drawing->addMouseUp( (long) xml.getAttribute(MOUSE_UP, MS, 0, i));
+					drawing->mouseUps.push_back( (long) xml.getAttribute(MOUSE_UP, MS, 0, i));
 				}
 				
 				xml.popTag();
