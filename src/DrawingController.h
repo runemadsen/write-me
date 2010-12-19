@@ -66,4 +66,6 @@ private:
 	RecordingHelper _recorder;
 	
 	float _texCoords[8];
+	
+	int ranIndex;
 };

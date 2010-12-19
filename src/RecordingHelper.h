@@ -19,6 +19,7 @@ public:
 	
 	void record();
 	void stopRecording();
+	void saveRecording();
 	
 	void reset();
 	

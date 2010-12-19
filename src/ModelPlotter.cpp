@@ -46,7 +46,7 @@ void ModelPlotter::draw()
 			}
 			else
 			{
-				drawModel(App::getInstance()->getPageModelByIndex(i), 0xFF0000);
+				drawModel(App::getInstance()->getPageModelByIndex(i), 0xFFFFFF);
 			}
 		}	
 	}

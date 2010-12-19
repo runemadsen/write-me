@@ -5,6 +5,8 @@
 
 DrawingController::DrawingController()
 {		
+	ranIndex = 0;
+	
 	allocateTextures();
 	
 	_drawing = false;
@@ -19,20 +21,28 @@ DrawingController::DrawingController()
 
 void DrawingController::allocateTextures()
 {
-	ofRectangle r = App::getInstance()->getModelBounds();
+	//ofRectangle r = App::getInstance()->getModelBounds();
+	
+	/*Page * model = App::getInstance()->getPageModelByIndex(ranIndex);
+	ofRectangle r;
+	r.x = model->pts[0].x;
+	r.y = model->pts[0].y;
+	r.width = model->pts[1].x - r.x;
+	r.height = model->pts[2].y - r.y;
 	
 	cout << "Reallocated texture to: " << r.width << " x " << r.height << endl;
-	cout << "Drawing Texture at: " << r.x << " , " << r.y << endl;
+	cout << "Drawing Texture at: " << r.x << " , " << r.y << endl;*/
 		
-	_tex.allocate(r.width, r.height, GL_RGB);
+	//_tex.allocate(r.width, r.height, GL_RGB);
+	_tex.allocate(210, 297, GL_RGB);
 	
 	resetTexture();
 }
 
 void DrawingController::resetTexture()
 {
-	App * app = App::getInstance();
-	ofRectangle r = App::getInstance()->getModelBounds();
+	//App * app = App::getInstance();
+	//ofRectangle r = App::getInstance()->getModelBounds();
 	
 	_tex.begin();
 	ofFill();
@@ -60,12 +70,12 @@ void DrawingController::update()
 {	
 	_fader.update();
 	
-	ofRectangle r = App::getInstance()->getModelBounds();
+	/*ofRectangle r = App::getInstance()->getModelBounds();
 	
 	if(r.width != _tex.getWidth() || r.height != _tex.getHeight())
 	{
 		allocateTextures();
-	}
+	}*/
 	
 	drawSinceLast();
 }
@@ -81,7 +91,7 @@ void DrawingController::draw()
 	
 	drawTexture();
 	
-	drawMouse();
+	//drawMouse();
 }
 
 /* Draw texture
@@ -92,23 +102,21 @@ void DrawingController::drawTexture()
 	ofSetColor(255, 255, 255);
 	
 	ofRectangle r = App::getInstance()->getModelBounds();
-	Page * model = App::getInstance()->getPageModelByIndex(0);
+	Page * model = App::getInstance()->getPageModelByIndex(ranIndex);
 	
 	_tex.bind();
+	
+	ofEnableAlphaBlending();
+	ofSetColor(255, 255, 255, _fader.num);
 	
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, &_texCoords[0]);
 	ofQuad2D(model->pts[0].x, model->pts[0].y, model->pts[1].x, model->pts[1].y, model->pts[2].x, model->pts[2].y, model->pts[3].x, model->pts[3].y);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	_tex.unbind();
+	ofDisableAlphaBlending();
 	
-	//ofEnableAlphaBlending();
-//	
-//	ofSetColor(255, 255, 255, _fader.num);
-//	_tex.draw(r.x, r.y, _tex.getWidth(), _tex.getHeight());
-//	
-//	ofDisableAlphaBlending();
+	_tex.unbind();
 }
 
 /* Draw mouse
@@ -233,7 +241,17 @@ void DrawingController::mouseReleased(int x, int y, int button)
 
 void DrawingController::keyPressed(int key)
 {
-	if(key == 'c')
+	if(key == 's')
+	{
+		_recorder.stopRecording();
+		
+		_recorder.saveRecording();
+		
+		reset();
+		
+		_finished = true;
+	}
+	else if(key == 'q')
 	{
 		_recorder.stopRecording();
 		
@@ -249,15 +267,15 @@ void DrawingController::keyPressed(int key)
 
 ofPoint DrawingController::getMousePosInTexture(int x, int y)
 {
-	ofRectangle r = App::getInstance()->getModelBounds();
+	//ofRectangle r = App::getInstance()->getModelBounds();
 	
 	ofPoint pos;
 	
 	float normX = (float) x / (float) ofGetWidth();
 	float normY = (float) y / (float) ofGetHeight();
 	
-	pos.x = normX * r.width;
-	pos.y = normY * r.height;
+	pos.x = normX * _tex.getWidth();
+	pos.y = normY * _tex.getHeight();
 	
 	return pos;
 }
@@ -276,6 +294,10 @@ void DrawingController::reset()
 
 void DrawingController::show()
 {
+	ranIndex = ofRandom(0, App::getInstance()->getPageModelsSize());
+	
+	//allocateTextures();
+	
 	_finished = false;
 	_fader.play();
 }

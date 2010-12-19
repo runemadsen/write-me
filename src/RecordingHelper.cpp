@@ -46,6 +46,13 @@ void RecordingHelper::record()
 
 void RecordingHelper::stopRecording()
 {
+	_recording = false;
+	
+	reset();
+}
+
+void RecordingHelper::saveRecording()
+{
 	if(ENABLE_SAVE)
 	{
 		if (_model->dots.size() > 0) 
@@ -55,10 +62,6 @@ void RecordingHelper::stopRecording()
 			App::getInstance()->addDrawingModel(_model);
 		}
 	}
-	
-	_recording = false;
-	
-	reset();
 }
 
 /* Save Model
