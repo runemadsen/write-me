@@ -41,6 +41,8 @@ public:
 	
 	void reset();
 	
+	int getLastIndex() { return ranIndex; }
+	
 private:
 	
 	bool _firstPress;

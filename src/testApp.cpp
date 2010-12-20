@@ -46,6 +46,15 @@ void testApp::update()
 	{
 		curAnimation = curAnimation == 0 ? 1 : 0;
 		
+		if (curAnimation == 0) 
+		{
+			DrawingController * drawing = (DrawingController *) animations[1];
+			PagesController * pages = (PagesController *) animations[0];
+			App * app = App::getInstance();
+			
+			pages->setDrawing(drawing->getLastIndex(), app->getDrawingModelsSize() - 1);
+		}
+		
 		animations[curAnimation]->show();
 	}
 }

@@ -21,6 +21,8 @@ public:
 
 	void createNewViews();
 	
+	void setDrawing(int pageID, int drawingIndex);
+	
 private:
 	
 	Drawing * getRandomDrawingModel();

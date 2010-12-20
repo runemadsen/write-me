@@ -27,7 +27,9 @@ public:
 	Page * getPageModel() { return _pageModel; }
 	Drawing * getDrawingModel() { return _drawingModel; }
 	
-	bool getFinished() { return _finished; }	
+	bool getFinished() { return _finished; }
+	
+	void finish();
 	
 private:
 	

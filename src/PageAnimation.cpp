@@ -217,6 +217,12 @@ void PageAnimation::hide()
 	_tweenDown.play();
 }
 
+void PageAnimation::finish()
+{
+	_tweenDown.stop();
+	_finished = true;
+}
+
 /* Getter / Setter
  ___________________________________________________________ */
 

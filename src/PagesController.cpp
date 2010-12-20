@@ -95,6 +95,24 @@ Drawing * PagesController::getRandomDrawingModel()
 	return App::getInstance()->getDrawingModelByIndex(ran);
 }
 
+/*Set new drawing
+ ___________________________________________________________ */
+
+void PagesController::setDrawing(int pageID, int drawingIndex)
+{
+	for(int i = 0; i < _views.size(); i++) 
+	{
+		if(pageID == _views[i]->getPageModel()->id)
+		{
+			_views[i]->finish();
+			_views[i]->setDrawingModel(App::getInstance()->getDrawingModelByIndex(drawingIndex));
+			_views[i]->show();
+			
+			return;
+		}
+	}
+}
+
 /* Show / hide
  ___________________________________________________________ */
 
